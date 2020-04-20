@@ -1,0 +1,108 @@
+﻿using CheapListBackEnd.Interfaces;
+using CheapListBackEnd.Models;
+using CheapListBackEnd.RepositoryInterfaces;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Web.Http;
+
+namespace CheapListBackEnd.Controllers
+{
+    //local  path = http://localhost:56794/api/AppUsers 
+    //global path = http://proj.ruppin.ac.il/bgroup5/FinalProject/backEnd/api/AppUsers
+    public class AppUsersController : ApiController
+    {
+        IAppUsersRepository repo;
+        // in this way I can use any class which implement IAppUsersRepository
+        public AppUsersController(IAppUsersRepository ir) => repo = ir; // Unity config use this constractur automatically 
+
+        // GET api/<controller>
+        [HttpGet]
+        [Route("api/AppUsers/GetUsers")] 
+        public IHttpActionResult Get()
+        {
+            try
+            {
+                List<AppUser> appUsersList = repo.GetAllAppUsers().ToList();
+                return Ok(appUsersList);
+            }
+            catch (Exception ex)
+            {
+                return Content(HttpStatusCode.BadRequest, ex);
+            }
+
+        }
+
+        [HttpGet]
+        [Route("api/AppUsers/GetUser/{userName}")]
+        public IHttpActionResult GetUser(string userName) //we support at all times UNIQE name 
+        {
+            try
+            {
+                AppUser appUser = repo.GetAppUserByName(userName);
+                return Ok(appUser);
+            }
+            catch (Exception ex)
+            {
+                return Content(HttpStatusCode.BadRequest, ex);
+            }
+        }
+
+        [HttpPost]
+        [Route("api/AppUsers/PostUser/{newUser}")]
+        public IHttpActionResult Post([FromBody]AppUser newUser)
+        {
+            try
+            {
+                repo.PostAppUser(newUser);
+                return Ok($"{newUser.UserName} has been added to the app database");
+            }
+            catch (Exception ex)
+            {
+                return Content(HttpStatusCode.BadRequest, ex);
+            }
+        }
+
+        // PUT api/<controller>/5
+        // col 2 update could be either: UserMail, UserPassword, UserName, User Adress ---> need to make a DDL in the client side
+        public IHttpActionResult Put([FromBody]UpdateAppUser user2update)
+        {
+            try
+            {
+                int res = repo.UpdateFeild(user2update);
+                return res > 0 ? Ok($"we have update {user2update.Column2update} to {user2update.NewValue} in the app database") :
+                throw new EntryPointNotFoundException($"there is no user with the provided id ({user2update.Id})");
+            }
+            catch (EntryPointNotFoundException ex)
+            {
+                return Content(HttpStatusCode.BadRequest, ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return Content(HttpStatusCode.BadRequest, ex);
+            }
+        }
+
+        // DELETE api/<controller>/5
+        public IHttpActionResult Delete(int id)
+        {
+            try
+            {
+                int res = repo.DeleteAppUser(id);
+                return res > 0 ? Ok($"the user with the id:{id} has been deleted from the app database") : 
+                throw new EntryPointNotFoundException("there is no user with the provided id");
+            }
+            catch (EntryPointNotFoundException ex)
+            {
+                return Content(HttpStatusCode.BadRequest, ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return Content(HttpStatusCode.BadRequest, ex);
+            }
+
+        }
+    }
+}
