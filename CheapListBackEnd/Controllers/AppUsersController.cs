@@ -1,16 +1,16 @@
-﻿using CheapListBackEnd.Interfaces;
+﻿//using CheapListBackEnd.Interfaces;
 using CheapListBackEnd.Models;
 using CheapListBackEnd.RepositoryInterfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
+//using System.Net.Http;
 using System.Web.Http;
 
 namespace CheapListBackEnd.Controllers
 {
-    //local  path = http://localhost:56794/api/AppUsers 
+    //local  path = http://localhost:56794/
     //global path = http://proj.ruppin.ac.il/bgroup5/FinalProject/backEnd/api/AppUsers
     public class AppUsersController : ApiController
     {
@@ -20,7 +20,7 @@ namespace CheapListBackEnd.Controllers
 
         // GET api/<controller>
         [HttpGet]
-        [Route("api/AppUsers/GetUsers")] 
+        [Route("api/AppUsers/GetUsers")]
         public IHttpActionResult Get()
         {
             try
@@ -37,12 +37,49 @@ namespace CheapListBackEnd.Controllers
 
         [HttpGet]
         [Route("api/AppUsers/GetUser/{userName}")]
-        public IHttpActionResult GetUser(string userName) //we support at all times UNIQE name 
+        public IHttpActionResult GetUser(string userName) 
+        {
+            // base is instead: AppUser appUser = repo.GetAppUserByName(userName);
+            // NOT TESTED yet
+            try
+            {
+                return base.Ok(repo.GetAppUserByName(userName));
+            }
+            catch (Exception ex)
+            {
+                return Content(HttpStatusCode.BadRequest, ex);
+            }
+        }
+
+
+        [HttpGet]
+        [Route("api/AppUsers/GetUserPass/{fullmailNoDots}")]
+        public IHttpActionResult GetUserPass(string fullmailNoDots) //forgot password I want it to be send to the user mail
+        /*cant get . so we change it to "_" our front-end
+        * and back to "." here
+        */
+        {
+            string userMail = fullmailNoDots.Replace("_",".");
+            try
+            {
+                AppUser user = repo.GetUser_forgotPass(userMail);
+                return Ok(user);
+            }
+            catch (Exception ex)
+            {
+                return Content(HttpStatusCode.BadRequest, ex);
+            }
+        }
+
+
+        [HttpGet]
+        [Route("api/AppUsers/AuthenticateUserLogin/{userName}/{userPassword}")] 
+        public IHttpActionResult AuthenticateUserLogin(string userName, string userPassword)
         {
             try
             {
-                AppUser appUser = repo.GetAppUserByName(userName);
-                return Ok(appUser);
+                AppUser au = repo.AuthenticateUserLogin(userName, userPassword);
+                return Ok(au);
             }
             catch (Exception ex)
             {
@@ -51,7 +88,7 @@ namespace CheapListBackEnd.Controllers
         }
 
         [HttpPost]
-        [Route("api/AppUsers/PostUser/{newUser}")]
+        [Route("api/AppUsers/PostUser")]
         public IHttpActionResult Post([FromBody]AppUser newUser)
         {
             try
@@ -64,6 +101,7 @@ namespace CheapListBackEnd.Controllers
                 return Content(HttpStatusCode.BadRequest, ex);
             }
         }
+
 
         // PUT api/<controller>/5
         // col 2 update could be either: UserMail, UserPassword, UserName, User Adress ---> need to make a DDL in the client side
@@ -91,7 +129,7 @@ namespace CheapListBackEnd.Controllers
             try
             {
                 int res = repo.DeleteAppUser(id);
-                return res > 0 ? Ok($"the user with the id:{id} has been deleted from the app database") : 
+                return res > 0 ? Ok($"the user with the id:{id} has been deleted from the app database") :
                 throw new EntryPointNotFoundException("there is no user with the provided id");
             }
             catch (EntryPointNotFoundException ex)

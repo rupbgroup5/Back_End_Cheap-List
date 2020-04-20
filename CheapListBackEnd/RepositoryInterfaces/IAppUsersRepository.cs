@@ -12,9 +12,10 @@ namespace CheapListBackEnd.RepositoryInterfaces
     {
         IEnumerable<AppUser> GetAllAppUsers();
         AppUser GetAppUserByName(string userName);
+        AppUser GetUser_forgotPass(string userMail);
         void PostAppUser(AppUser newUser);
         int DeleteAppUser(int id);
         int UpdateFeild(UpdateAppUser user2epdate);
-        
+        AppUser AuthenticateUserLogin(string userName, string password);
     }
 }

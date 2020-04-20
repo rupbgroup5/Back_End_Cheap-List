@@ -12,21 +12,23 @@ namespace CheapListBackEnd.Repository
 {
     public class SQLAppUsersRepository : SQLGeneralRepository, IAppUsersRepository
     {
+        SqlConnection con = null;
+        SqlCommand cmd = null;
+        SqlDataReader sdr = null;
 
         public IEnumerable<AppUser> GetAllAppUsers()
         {
             List<AppUser> allUsers = new List<AppUser>();
-            SqlConnection con = null;
 
             try
             {
-                con = connect(true); 
+                con = connect(true);
 
                 string query = "select  * from AppUser";
 
-                SqlCommand cmd = new SqlCommand(query, con);
+                cmd = new SqlCommand(query, con);
 
-                SqlDataReader sdr = cmd.ExecuteReader();
+                sdr = cmd.ExecuteReader();
 
                 while (sdr.Read())
                 {
@@ -55,9 +57,7 @@ namespace CheapListBackEnd.Repository
 
         public AppUser GetAppUserByName(string userName)
         {
-
             AppUser au = new AppUser();
-            SqlConnection con = null;
 
             try
             {
@@ -65,9 +65,9 @@ namespace CheapListBackEnd.Repository
 
                 string query = $"select * from temp_AppUser where UserName = '{userName}'";
 
-                SqlCommand cmd = new SqlCommand(query, con);
+                cmd = new SqlCommand(query, con);
 
-                SqlDataReader sdr = cmd.ExecuteReader();
+                sdr = cmd.ExecuteReader();
 
                 while (sdr.Read())
                 {
@@ -87,17 +87,114 @@ namespace CheapListBackEnd.Repository
             {
                 con.Close();
             }
-
         }
 
-        public void PostAppUser(AppUser newUser) 
+        public AppUser GetUser_forgotPass(string userMail)
         {
-            SqlConnection con;
-            SqlCommand cmd;
+            
+            try
+            {
+                AppUser au = new AppUser();
+                con = connect(false);
+
+                string query = $"exec spAppUser_GetUserPassword @userEmail='{userMail}'";
+
+                cmd = new SqlCommand(query, con);
+
+                sdr = cmd.ExecuteReader();
+                if (sdr.Read())
+                {
+                    au.UserID = (int)sdr["userID"];
+                    au.UserMail = (string)sdr["userMail"];
+                    au.UserPassword = (string)sdr["UserPassword"];
+                }
+
+                return au;
+
+            }
+            catch (Exception exp)
+            {
+                throw (exp);
+            }
+            finally
+            {
+                con.Close();
+            }
+
+
+
+
+
+            throw new NotImplementedException();
+        }
+
+
+        public AppUser AuthenticateUserLogin(string userName, string password)
+        {
+            AppUser au = new AppUser();
 
             try
             {
-                con = connect(false);// seconde opt is: localConStr and true 
+                con = connect(false);
+
+                string query = $"exec spAppUser_GetByNameAndPass @user_Name='{userName}', @user_Password='{password}'";
+
+                cmd = new SqlCommand(query, con);
+
+                sdr = cmd.ExecuteReader();
+
+                if (sdr.Read())
+                {
+                    au.UserName = (string)sdr["UserName"];
+                    au.UserPassword = (string)sdr["UserPassword"];
+                    //if the user exist and the password metch so I return appuser, else au = null
+                }
+                else { au = null; }
+                return au;
+            }
+            catch (Exception exp)
+            {
+                throw (exp);
+            }
+            finally
+            {
+                con.Close();
+            }
+
+        }
+
+        public int DeleteAppUser(int id)
+        {
+
+            try
+            {
+                con = connect(true);
+
+                string query = $"delete AppUser where UserID = {id}";
+
+                cmd = new SqlCommand(query, con);
+
+                int res = cmd.ExecuteNonQuery();
+                return res;
+
+            }
+            catch (Exception exp)
+            {
+                throw (exp);
+            }
+            finally
+            {
+                con.Close();
+            }
+
+        }
+
+        public void PostAppUser(AppUser newUser)
+        {
+
+            try
+            {
+                con = connect(false);
             }
             catch (Exception ex)
             {
@@ -122,56 +219,17 @@ namespace CheapListBackEnd.Repository
 
         }
 
-
-        //PAY ATTENTION THIS IS INERTION TO A TEMP_TABLE!!!
-        private string BuildInsertNewUserQuery(AppUser newUser)
-        {
-            string query = "SET QUOTED_IDENTIFIER OFF\r\n"; // if there is an ' so it wont ruined the insertition
-            query += "insert  into temp_AppUser (UserMail, UserPassword, UserName, UserAdress)\r\n";
-            query += $"VALUES (\"{newUser.UserMail}\",\"{newUser.UserPassword}\",\"{newUser.UserName}\", \"{newUser.UserAdress}\");";
-            return query;
-        }
-
-        public int DeleteAppUser(int id)
-        {
-            SqlConnection con = null;
-
-            try
-            {
-                con = connect( true);
-
-                string query = $"delete AppUser where UserID = {id}";
-
-                SqlCommand cmd = new SqlCommand(query, con);
-
-                int res = cmd.ExecuteNonQuery();
-                return res;
-
-            }
-            catch (Exception exp)
-            {
-                throw (exp);
-            }
-            finally
-            {
-                con.Close();
-            }
-
-        }
-
         public int UpdateFeild(UpdateAppUser user2update)
         {
-            SqlConnection con = null;
-
             try
             {
-                con = connect(false);
+                con = connect(true);
 
                 string query = "SET QUOTED_IDENTIFIER OFF\r\n"; // if there is an ' so it wont ruined the UPDATE
                 query += $"UPDATE AppUser SET {user2update.Column2update}=\"{user2update.NewValue}\"";
                 query += $"WHERE UserID={user2update.Id};";
 
-                SqlCommand cmd = new SqlCommand(query, con);
+                cmd = new SqlCommand(query, con);
 
                 int res = cmd.ExecuteNonQuery();
                 return res;
@@ -188,6 +246,14 @@ namespace CheapListBackEnd.Repository
 
         }
 
+
+        private string BuildInsertNewUserQuery(AppUser newUser)
+        {
+            string query = "SET QUOTED_IDENTIFIER OFF\r\n"; // if there is an ' so it wont ruined the insertition
+            query += "insert  into AppUser (UserName, UserMail, UserPassword, UserAdress)\r\n";
+            query += $"VALUES (\"{newUser.UserName}\", \"{newUser.UserMail}\", \"{newUser.UserPassword}\", \"{newUser.UserAdress}\");";
+            return query;
+        }
 
 
     }
