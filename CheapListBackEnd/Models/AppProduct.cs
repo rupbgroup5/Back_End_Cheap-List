@@ -20,8 +20,7 @@ namespace CheapListBackEnd.Models
         public int EstimatedPrice { get; set; }
         public int Price { get; set; }
 
-        public int check { get; set; }
 
-      
+        public int MyProperty { get; set; }
     }
 }
