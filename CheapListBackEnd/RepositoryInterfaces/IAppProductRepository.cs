@@ -11,6 +11,6 @@ namespace CheapListBackEnd.RepositoryInterfaces
     {
         IEnumerable<AppProduct> GetProductCart(int listID);
         int PostAppProduct(AppProduct product);
-        int DeleteProduct(int barcode);
+        int DeleteProduct(string barcode, int listID);
     }
 }

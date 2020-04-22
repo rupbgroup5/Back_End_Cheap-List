@@ -75,6 +75,39 @@ namespace CheapListBackEnd.Controllers
                 return Content(HttpStatusCode.BadRequest, ex); ;
             }
         }
+        
+        [HttpPut]
+        [Route("api/appList/{cityName}/{listID}")]
+        public IHttpActionResult PutCityName(string cityName, int listID)
+        {
+            try
+            {
+                repo.UpdateCityName(cityName, listID);
+                return Ok(cityName);
+            }
+            catch (Exception ex)
+            {
+
+                return Content(HttpStatusCode.BadRequest, ex); ;
+            }
+        }
+        [HttpPut]
+        [Route("api/appList/limit/{limit}/{listID}")]
+        public IHttpActionResult PutLimitPrice(int limit, int listID)
+        {
+            try
+            {
+                repo.UpdateLimitPrice(limit, listID);
+                return Ok(limit);
+            }
+            catch (Exception ex)
+            {
+
+                return Content(HttpStatusCode.BadRequest, ex); ;
+            }
+        }
+
+
 
         // DELETE api/<controller>/5
         [HttpDelete]

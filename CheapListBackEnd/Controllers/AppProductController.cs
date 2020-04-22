@@ -51,8 +51,20 @@ namespace CheapListBackEnd.Controllers
         }
 
         // DELETE api/<controller>/5
-        public void Delete(int id)
+        [HttpDelete]
+        [Route("api/appProduct/{barcode}/{listID}")]
+        public IHttpActionResult Delete(string barcode, int listID)
         {
+            try
+            {
+                repo.DeleteProduct(barcode,listID);
+                return Ok(barcode);
+            }
+            catch (Exception ex)
+            {
+
+                return Content(HttpStatusCode.BadRequest, ex); ;
+            }
         }
     }
 }
