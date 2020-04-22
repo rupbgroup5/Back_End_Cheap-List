@@ -55,7 +55,7 @@ namespace CheapListBackEnd.Controllers
         [HttpGet]
         [Route("api/AppUsers/GetUserPass/{fullmailNoDots}")]
         public IHttpActionResult GetUserPass(string fullmailNoDots) //forgot password I want it to be send to the user mail
-        /*cant get . so we change it to "_" our front-end
+        /*cant get . so we change it to "_" at our front-end
         * and back to "." here
         */
         {

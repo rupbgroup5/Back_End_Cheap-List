@@ -203,7 +203,19 @@ namespace CheapListBackEnd.Repository
 
             try
             {
-                string query = BuildInsertNewUserQuery(newUser);
+
+            string query = "SET QUOTED_IDENTIFIER OFF\r\n"; // if there is an ' so it wont ruined the insertition
+                   query += "insert  into AppUser (UserName, UserMail, UserPassword, UserAdress)\r\n";
+                   query += $"VALUES (\"{newUser.UserName}\", \"{newUser.UserMail}\", \"{newUser.UserPassword}\", \"{newUser.UserAdress}\");";
+                   query += "declare @userID2Associate int;";
+                   query += "set @userID2Associate = Scope_identity()";
+                   
+                   query += "insert into Contacts (ContactName, ContactPhoneNumber, AppUserID) VALUES";
+                    foreach (var contact in newUser.Contacts)
+	                {
+                        query += $"'{contact.Name}','{contact.PhoneNumber}', @userID2Associate),";
+                    }
+
                 cmd = new SqlCommand(query, con);
                 cmd.ExecuteNonQuery();
             }
