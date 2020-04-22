@@ -18,7 +18,7 @@ namespace CheapListBackEnd.Reposiroty
             
 
             try
-            {
+          {
                 con = connect(false);
 
                 string query = $"select  * from AppList where groupID = {groupID}";
@@ -33,11 +33,18 @@ namespace CheapListBackEnd.Reposiroty
                     al.ListID = (int)sdr["listID"];
                     al.GroupID = (int)sdr["groupID"];
                     al.ListName = Convert.ToString(sdr["listName"]);
-                    al.ListTotalPrice = Convert.ToInt32(sdr["listTotalPrice"]);
+                    al.ListTotalPrice = Convert.ToDouble(sdr["listTotalPrice"]);
+                    al.ListEstimatedPrice = Convert.ToDouble(sdr["listEstimatedPrice"]);
                     al.ListDescription = Convert.ToString(sdr["listDescription"]);
-
+                    al.CityName = Convert.ToString(sdr["cityName"]);
+                    if (al.CityName == null)
+                    {
+                        al.CityName = "עדיין לא הוגדר עיר לחיפוש";
+                    }
+                    al.LimitPrice = (int)sdr["limitPrice"];
                     allLists.Add(al);
                 }
+
                 return allLists;
             }
             catch (Exception exp)
@@ -72,10 +79,15 @@ namespace CheapListBackEnd.Reposiroty
                     al.ListID = (int)sdr["listID"];
                     al.GroupID = (int)sdr["groupID"];
                     al.ListName = Convert.ToString(sdr["listName"]);
+                    al.ListEstimatedPrice = Convert.ToDouble(sdr["listEstimatedPrice"]);
                     al.ListTotalPrice = (int)sdr["listTotalPrice"];
                     al.ListDescription = Convert.ToString(sdr["listDescription"]);
-
-                    
+                    al.CityName = Convert.ToString(sdr["cityName"]);
+                    if (al.CityName == null)
+                    {
+                        al.CityName = "עדיין לא הוגדר עיר לחיפוש";
+                    }
+                    al.LimitPrice = (int)sdr["limitPrice"];
                 }
                 return al;
             }
@@ -127,7 +139,11 @@ namespace CheapListBackEnd.Reposiroty
             try
             {
                 con = connect(false);
-                string str = $"delete from AppList where listID = {id}";
+                string str = $"delete from AppList where listID = {id}" +
+                             "delete from AppProduct where product_barcode not in (select product_barcode from ProductinList)";
+
+
+
                 cmd = new SqlCommand(str, con);
                 return cmd.ExecuteNonQuery();
 
@@ -177,6 +193,64 @@ namespace CheapListBackEnd.Reposiroty
 
         }
 
+        public int UpdateCityName(string cityName ,int listID)
+        {
+            SqlConnection con = null;
+            SqlCommand cmd;
+            try
+            {
+                con = connect(false);
+                string str = "update AppList " +
+                             $"set cityName = '{cityName}' " +
+                             $"where listID = {listID}";
 
+                cmd = new SqlCommand(str, con);
+                return cmd.ExecuteNonQuery();
+
+            }
+            catch (Exception ex)
+            {
+                return 0;
+                throw (ex);
+
+            }
+            finally
+            {
+                if (con != null)
+                {
+                    con.Close();
+                }
+            }
+        }
+
+        public int UpdateLimitPrice(int limit, int listID)
+        {
+            SqlConnection con = null;
+            SqlCommand cmd;
+            try
+            {
+                con = connect(false);
+                string str = "update AppList " +
+                             $"set limitPrice = {limit} " +
+                             $"where listID = {listID}";
+
+                cmd = new SqlCommand(str, con);
+                return cmd.ExecuteNonQuery();
+
+            }
+            catch (Exception ex)
+            {
+                return 0;
+                throw (ex);
+
+            }
+            finally
+            {
+                if (con != null)
+                {
+                    con.Close();
+                }
+            }
+        }
     }
 }

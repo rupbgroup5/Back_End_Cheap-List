@@ -31,7 +31,6 @@ namespace CheapListBackEnd.Reposiroty
                     ag.GroupID = (int)sdr["groupID"];
                     ag.GroupName = Convert.ToString(sdr["groupName"]);
                     ag.GroupImg = Convert.ToString(sdr["groupImg"]);
-
                     allGroups.Add(ag);
                 }
                 return allGroups;
@@ -125,7 +124,8 @@ namespace CheapListBackEnd.Reposiroty
             try
             {
                 con = connect(false);
-                string str = $"delete from AppGroup where groupID = {id}";
+                string str = $"delete from AppGroup where groupID = {id}" +
+                             "delete from AppProduct where product_barcode not in (select product_barcode from ProductinList)";
                 cmd = new SqlCommand(str, con);
                 return cmd.ExecuteNonQuery();
 

@@ -14,5 +14,9 @@ namespace CheapListBackEnd.RepositoryInterfaces
         int PostAppList(AppList appList);
         int DeleteAppList(int id);
         int UpdateListName(AppList appList);
+        int UpdateCityName(string name, int listID);
+        int UpdateLimitPrice(int limit, int listID);
+
+
     }
 }
