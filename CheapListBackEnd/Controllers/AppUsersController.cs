@@ -104,7 +104,8 @@ namespace CheapListBackEnd.Controllers
 
 
         // PUT api/<controller>/5
-        // col 2 update could be either: UserMail, UserPassword, UserName, User Adress ---> need to make a DDL in the client side
+        // col 2 update could be either: UserMail, UserPassword, UserName, User Adress
+        //---> need to make a DDL in the client side
         public IHttpActionResult Put([FromBody]UpdateAppUser user2update)
         {
             try

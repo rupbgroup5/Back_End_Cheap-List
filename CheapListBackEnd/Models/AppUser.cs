@@ -12,6 +12,7 @@ namespace CheapListBackEnd.Models
         public string UserPassword { get; set; }
         public string UserMail { get; set; }
         public string UserAdress { get; set; }
+        public List<Contact> Contacts { get; set; }
 
     }
 }
