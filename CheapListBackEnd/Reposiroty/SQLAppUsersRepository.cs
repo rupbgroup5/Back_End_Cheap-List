@@ -138,8 +138,11 @@ namespace CheapListBackEnd.Repository
 
                 if (sdr.Read())
                 {
-                    au.UserName = (string)sdr["UserName"];
-                    au.UserPassword = (string)sdr["UserPassword"];
+                    au.UserID = (int)sdr["UserID"];
+                    au.UserName = Convert.ToString(sdr["UserName"]);
+                    au.UserPassword = Convert.ToString(sdr["UserPassword"]);
+                    au.UserMail = Convert.ToString(sdr["UserMail"]);
+                    au.UserAdress = Convert.ToString(sdr["UserAdress"]);
                     //if the user exist and the password metch so I return appuser, else au = null
                 }
                 else { au = null; }
@@ -182,7 +185,7 @@ namespace CheapListBackEnd.Repository
 
         }
 
-        public void PostAppUser(AppUser newUser)
+        public int PostAppUser(AppUser newUser)
         {
 
             try
@@ -206,13 +209,26 @@ namespace CheapListBackEnd.Repository
                 query += "insert into Contacts (ContactName, ContactPhoneNumber, AppUserID) VALUES";
                 foreach (var contact in newUser.Contacts)
                 {
-                    query += $"('{contact.Name}','{contact.PhoneNumber}', @userID2Associate),";
+                    string replaceTheName = "";
+                    if (contact.Name.Contains('"'))
+                    {
+                        replaceTheName = contact.Name.Replace('"', '`');
+                    }
+                    else
+                    {
+                        replaceTheName = contact.Name;
+                    }
+                    query += $" (\"{replaceTheName}\",\"{contact.PhoneNumber}\", @userID2Associate),";
+
                 }
                 query = query.Substring(0, query.Length - 1);
-
+                query += "select @userID2Associate as userID";
 
                 cmd = new SqlCommand(query, con);
-                cmd.ExecuteNonQuery();
+
+                int res = (int)cmd.ExecuteScalar();
+
+                return res;
             }
             catch (Exception ex)
             {
@@ -258,13 +274,22 @@ namespace CheapListBackEnd.Repository
             try
             {
                 con = connect(false);
-
-                string query = $"delete Contacts where AppUserID={user.UserID} ";
+                string query = "SET QUOTED_IDENTIFIER OFF \r\n";
+                 query += $"delete Contacts where AppUserID={user.UserID} ";
                  query += "insert into Contacts(ContactName, ContactPhoneNumber, AppUserID) values ";
-
+                
                 foreach (var contact in user.Contacts)
                 {
-                    query += $" ('{contact.Name}','{contact.PhoneNumber}', {user.UserID}),";
+                    string replaceTheName = "";
+                    if (contact.Name.Contains('"'))
+                    {
+                        replaceTheName = contact.Name.Replace('"', '`');
+                    }
+                    else
+                    {
+                        replaceTheName = contact.Name;
+                    }
+                    query += $" (\"{replaceTheName}\",\"{contact.PhoneNumber}\", {user.UserID}),";
 
                 }
                 query = query.Substring(0, query.Length - 1);
