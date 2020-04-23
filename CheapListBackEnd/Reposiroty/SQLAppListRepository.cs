@@ -114,8 +114,9 @@ namespace CheapListBackEnd.Reposiroty
                              $"insert into AppList (groupID,listName) values({appList.GroupID},'{appList.ListName}')" +
                              "select @LastListID = SCOPE_IDENTITY();" +
                              "insert into UserInList (userID,listID,groupID) values(" +
-                             $"(select userid FROM AppUser WHERE UserName='{appList.CreatorName}'),@LastListID,{appList.GroupID})" +
+                             $"{appList.UserID},@LastListID,{appList.GroupID})" +
                              "select @LastListID as ListID";
+                //select userid FROM AppUser WHERE UserName='{appList.UserID}'
 
                 cmd = new SqlCommand(str, con);
                 appList.ListID = Convert.ToInt32(cmd.ExecuteScalar());

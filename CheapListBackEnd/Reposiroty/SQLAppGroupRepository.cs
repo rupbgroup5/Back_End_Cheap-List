@@ -93,8 +93,10 @@ namespace CheapListBackEnd.Reposiroty
                              $"insert into AppGroup (groupName) values('{appGroup.GroupName}')" +
                              "select @LastGroupID = SCOPE_IDENTITY();" +
                              "insert into UserInGroup (userID, groupID, isAdmin) values(" +
-                             $"(select userid FROM AppUser WHERE UserName='{appGroup.CreatorName}'),@LastGroupID,1)" +
+                             $"{appGroup.UserID},@LastGroupID,1)" +
                              " select @LastGroupID as GroupID";
+
+                //select userid FROM AppUser WHERE UserName='{appGroup.CreatorName}'
 
 
 

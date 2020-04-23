@@ -11,7 +11,7 @@ namespace CheapListBackEnd.Models
         public int GroupID { get; set; }
         public string GroupName { get; set; }
         public string GroupImg { get; set; }
-        public string CreatorName { get; set; }
+        public int UserID { get; set; }
         public bool IsAdmin { get; set; }
 
     }
