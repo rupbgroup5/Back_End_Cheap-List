@@ -91,7 +91,7 @@ namespace CheapListBackEnd.Repository
 
         public AppUser GetUser_forgotPass(string userMail)
         {
-            
+
             try
             {
                 AppUser au = new AppUser();
@@ -120,14 +120,7 @@ namespace CheapListBackEnd.Repository
             {
                 con.Close();
             }
-
-
-
-
-
-            throw new NotImplementedException();
         }
-
 
         public AppUser AuthenticateUserLogin(string userName, string password)
         {
@@ -204,17 +197,19 @@ namespace CheapListBackEnd.Repository
             try
             {
 
-            string query = "SET QUOTED_IDENTIFIER OFF\r\n"; // if there is an ' so it wont ruined the insertition
-                   query += "insert  into AppUser (UserName, UserMail, UserPassword, UserAdress)\r\n";
-                   query += $"VALUES (\"{newUser.UserName}\", \"{newUser.UserMail}\", \"{newUser.UserPassword}\", \"{newUser.UserAdress}\");";
-                   query += "declare @userID2Associate int;";
-                   query += "set @userID2Associate = Scope_identity()";
-                   
-                   query += "insert into Contacts (ContactName, ContactPhoneNumber, AppUserID) VALUES";
-                    foreach (var contact in newUser.Contacts)
-	                {
-                        query += $"'{contact.Name}','{contact.PhoneNumber}', @userID2Associate),";
-                    }
+                string query = "SET QUOTED_IDENTIFIER OFF\r\n"; // if there is an ' so it wont ruined the insertition
+                query += "insert  into AppUser (UserName, UserMail, UserPassword, UserAdress)\r\n";
+                query += $"VALUES (\"{newUser.UserName}\", \"{newUser.UserMail}\", \"{newUser.UserPassword}\", \"{newUser.UserAdress}\");";
+                query += "declare @userID2Associate int;";
+                query += "set @userID2Associate = Scope_identity()";
+
+                query += "insert into Contacts (ContactName, ContactPhoneNumber, AppUserID) VALUES";
+                foreach (var contact in newUser.Contacts)
+                {
+                    query += $"('{contact.Name}','{contact.PhoneNumber}', @userID2Associate),";
+                }
+                query = query.Substring(0, query.Length - 1);
+
 
                 cmd = new SqlCommand(query, con);
                 cmd.ExecuteNonQuery();
@@ -235,7 +230,7 @@ namespace CheapListBackEnd.Repository
         {
             try
             {
-                con = connect(true);
+                con = connect(false); // true?
 
                 string query = "SET QUOTED_IDENTIFIER OFF\r\n"; // if there is an ' so it wont ruined the UPDATE
                 query += $"UPDATE AppUser SET {user2update.Column2update}=\"{user2update.NewValue}\"";
@@ -258,15 +253,70 @@ namespace CheapListBackEnd.Repository
 
         }
 
-
-        private string BuildInsertNewUserQuery(AppUser newUser)
+        public void UpdateUserContactsList(AppUser user)
         {
-            string query = "SET QUOTED_IDENTIFIER OFF\r\n"; // if there is an ' so it wont ruined the insertition
-            query += "insert  into AppUser (UserName, UserMail, UserPassword, UserAdress)\r\n";
-            query += $"VALUES (\"{newUser.UserName}\", \"{newUser.UserMail}\", \"{newUser.UserPassword}\", \"{newUser.UserAdress}\");";
-            return query;
+            try
+            {
+                con = connect(false);
+
+                string query = $"delete Contacts where AppUserID={user.UserID} ";
+                 query += "insert into Contacts(ContactName, ContactPhoneNumber, AppUserID) values ";
+
+                foreach (var contact in user.Contacts)
+                {
+                    query += $" ('{contact.Name}','{contact.PhoneNumber}', {user.UserID}),";
+
+                }
+                query = query.Substring(0, query.Length - 1);
+
+                cmd = new SqlCommand(query, con);
+
+                cmd.ExecuteNonQuery();
+
+            }
+            catch (Exception exp)
+            {
+                throw (exp);
+            }
+            finally
+            {
+                con.Close();
+            }
+
         }
 
+        public List<Contact> GetUserContacts(int userID)
+        {
+            try
+            {
+                con = connect(false);
 
+                string query = $"exec spContacts_GetContactsByUserID @userID={userID}";
+
+                cmd = new SqlCommand(query, con);
+
+                sdr = cmd.ExecuteReader();
+
+                List<Contact> contacts = new List<Contact>();
+                while(sdr.Read())
+                {
+                    Contact c = new Contact();
+                    c.Name = (string)sdr["ContactName"];
+                    c.PhoneNumber = (string)sdr["ContactPhoneNumber"];
+                    contacts.Add(c);
+                }
+                return contacts;
+
+            }
+            catch (Exception exp)
+            {
+                throw (exp);
+            }
+            finally
+            {
+                con.Close();
+            }
+
+        }
     }
 }

@@ -87,6 +87,25 @@ namespace CheapListBackEnd.Controllers
             }
         }
 
+
+        [HttpGet]
+        [Route("api/AppUsers/GetUserContacts/{userID}")]
+        public IHttpActionResult GetUserContacts(int userID)
+        {
+            try
+            {
+                List<Contact> contacts = repo.GetUserContacts(userID);
+                return Ok(contacts);
+            }
+            catch (Exception ex)
+            {
+                return Content(HttpStatusCode.BadRequest, ex);
+            }
+            
+        }
+
+
+
         [HttpPost]
         [Route("api/AppUsers/PostUser")]
         public IHttpActionResult Post([FromBody]AppUser newUser)
@@ -123,6 +142,26 @@ namespace CheapListBackEnd.Controllers
                 return Content(HttpStatusCode.BadRequest, ex);
             }
         }
+
+
+        [HttpPost]
+        [Route("api/AppUsers/updateUserContacts")]
+        public IHttpActionResult UpdateUserContacts([FromBody]AppUser user)
+        {
+            try
+            {
+                repo.UpdateUserContactsList(user);
+
+                //manage response....
+                return Ok("user contacts has been updated");
+            }
+            catch (Exception ex)
+            {
+                return Content(HttpStatusCode.BadRequest, ex);
+            }
+        }
+
+
 
         // DELETE api/<controller>/5
         public IHttpActionResult Delete(int id)
