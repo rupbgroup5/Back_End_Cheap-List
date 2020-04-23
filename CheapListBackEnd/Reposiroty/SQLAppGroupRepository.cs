@@ -81,15 +81,11 @@ namespace CheapListBackEnd.Reposiroty
             }
         }
 
-        public int PostAppGroup(AppGroup appGroup)
+        public AppGroup PostAppGroup(AppGroup appGroup)
         {
             SqlConnection con = null;
             SqlCommand cmd;
-            int isAdmin = 0;
-            if (appGroup.IsAdmin)
-            {
-                isAdmin = 1;
-            }
+          
             try
             {
                 con = connect(false);
@@ -97,15 +93,18 @@ namespace CheapListBackEnd.Reposiroty
                              $"insert into AppGroup (groupName) values('{appGroup.GroupName}')" +
                              "select @LastGroupID = SCOPE_IDENTITY();" +
                              "insert into UserInGroup (userID, groupID, isAdmin) values(" +
-                             $"(select userid FROM AppUser WHERE UserName='{appGroup.CreatorName}'),@LastGroupID,{isAdmin})";
+                             $"(select userid FROM AppUser WHERE UserName='{appGroup.CreatorName}'),@LastGroupID,1)" +
+                             " select @LastGroupID as GroupID";
+
+
 
                 cmd = new SqlCommand(str, con);
-                return cmd.ExecuteNonQuery();
+                appGroup.GroupID = Convert.ToInt32(cmd.ExecuteScalar());
+                return appGroup;
 
             }
             catch (Exception ex)
             {
-                return 0;
                 throw (ex);
 
             }

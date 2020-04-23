@@ -11,7 +11,7 @@ namespace CheapListBackEnd.RepositoryInterfaces
     {
         IEnumerable<AppList> GetAllList(int groupID);
         AppList GetAppListById(int groupID, int listID);
-        int PostAppList(AppList appList);
+        AppList PostAppList(AppList appList);
         int DeleteAppList(int id);
         int UpdateListName(AppList appList);
         int UpdateCityName(string name, int listID);

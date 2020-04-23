@@ -100,11 +100,13 @@ namespace CheapListBackEnd.Reposiroty
                 con.Close();
             }
         }
-        public int PostAppList(AppList appList)
+        public AppList PostAppList(AppList appList)
         {
             SqlConnection con = null;
             SqlCommand cmd;
           
+           
+
             try
             {
                 con = connect(false);
@@ -112,15 +114,18 @@ namespace CheapListBackEnd.Reposiroty
                              $"insert into AppList (groupID,listName) values({appList.GroupID},'{appList.ListName}')" +
                              "select @LastListID = SCOPE_IDENTITY();" +
                              "insert into UserInList (userID,listID,groupID) values(" +
-                             $"(select userid FROM AppUser WHERE UserName='{appList.CreatorName}'),@LastListID,{appList.GroupID})";
+                             $"(select userid FROM AppUser WHERE UserName='{appList.CreatorName}'),@LastListID,{appList.GroupID})" +
+                             "select @LastListID as ListID";
 
                 cmd = new SqlCommand(str, con);
-                return cmd.ExecuteNonQuery();
+                appList.ListID = Convert.ToInt32(cmd.ExecuteScalar());
 
+                return appList;
+                
             }
             catch (Exception ex)
             {
-                return 0;
+                
                 throw (ex);
 
             }

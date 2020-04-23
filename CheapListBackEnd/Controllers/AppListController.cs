@@ -107,8 +107,6 @@ namespace CheapListBackEnd.Controllers
             }
         }
 
-
-
         // DELETE api/<controller>/5
         [HttpDelete]
         [Route("api/appList/{id}")]
