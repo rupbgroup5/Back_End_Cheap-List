@@ -14,5 +14,6 @@ namespace CheapListBackEnd.Models
         public string UserAdress { get; set; }
         public List<Contact> Contacts { get; set; }
 
+
     }
 }

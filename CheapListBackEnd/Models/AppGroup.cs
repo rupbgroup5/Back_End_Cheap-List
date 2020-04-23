@@ -14,6 +14,5 @@ namespace CheapListBackEnd.Models
         public string CreatorName { get; set; }
         public bool IsAdmin { get; set; }
 
-
     }
 }
