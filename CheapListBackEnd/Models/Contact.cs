@@ -10,6 +10,6 @@ namespace CheapListBackEnd.Models
 
         public string Name { get; set; }
         public string PhoneNumber { get; set; }
-        public int MyProperty { get; set; }
+
     }
 }

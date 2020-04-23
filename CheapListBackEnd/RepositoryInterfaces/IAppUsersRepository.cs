@@ -17,5 +17,9 @@ namespace CheapListBackEnd.RepositoryInterfaces
         int DeleteAppUser(int id);
         int UpdateFeild(UpdateAppUser user2epdate);
         AppUser AuthenticateUserLogin(string userName, string password);
+        void UpdateUserContactsList(AppUser user);
+        List<Contact> GetUserContacts(int userID);
+
+
     }
 }
