@@ -185,7 +185,7 @@ namespace CheapListBackEnd.Repository
 
         }
 
-        public void PostAppUser(AppUser newUser)
+        public int PostAppUser(AppUser newUser)
         {
 
             try
@@ -209,13 +209,23 @@ namespace CheapListBackEnd.Repository
                 query += "insert into Contacts (ContactName, ContactPhoneNumber, AppUserID) VALUES";
                 foreach (var contact in newUser.Contacts)
                 {
-                    query += $"('{contact.Name}','{contact.PhoneNumber}', @userID2Associate),";
+                    string replaceTheName = "";
+                    if (contact.Name.Contains('"'))
+                    {
+                        replaceTheName = contact.Name.Replace('"', '`');
+                    }
+                    else
+                    {
+                        replaceTheName = contact.Name;
+                    }
+                    query += $" (\"{replaceTheName}\",\"{contact.PhoneNumber}\", @userID2Associate)),";
+
                 }
                 query = query.Substring(0, query.Length - 1);
-
+                query += "select @userID2Associate as userID";
 
                 cmd = new SqlCommand(query, con);
-                cmd.ExecuteNonQuery();
+                return (int)cmd.ExecuteScalar();
             }
             catch (Exception ex)
             {

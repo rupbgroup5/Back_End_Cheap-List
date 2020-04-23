@@ -119,8 +119,8 @@ namespace CheapListBackEnd.Controllers
         {
             try
             {
-                repo.PostAppUser(newUser);
-                return Ok($"{newUser.UserName} has been added to the app database");
+                int newUserID = repo.PostAppUser(newUser);
+                return Ok(newUserID);
             }
             catch (Exception ex)
             {
