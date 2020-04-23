@@ -261,13 +261,22 @@ namespace CheapListBackEnd.Repository
             try
             {
                 con = connect(false);
-
-                string query = $"delete Contacts where AppUserID={user.UserID} ";
+                string query = "SET QUOTED_IDENTIFIER OFF \r\n";
+                 query += $"delete Contacts where AppUserID={user.UserID} ";
                  query += "insert into Contacts(ContactName, ContactPhoneNumber, AppUserID) values ";
-
+                
                 foreach (var contact in user.Contacts)
                 {
-                    query += $" ('{contact.Name}','{contact.PhoneNumber}', {user.UserID}),";
+                    string replaceTheName = "";
+                    if (contact.Name.Contains('"'))
+                    {
+                        replaceTheName = contact.Name.Replace('"', '`');
+                    }
+                    else
+                    {
+                        replaceTheName = contact.Name;
+                    }
+                    query += $" (\"{replaceTheName}\",\"{contact.PhoneNumber}\", {user.UserID}),";
 
                 }
                 query = query.Substring(0, query.Length - 1);
