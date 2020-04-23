@@ -138,8 +138,11 @@ namespace CheapListBackEnd.Repository
 
                 if (sdr.Read())
                 {
-                    au.UserName = (string)sdr["UserName"];
-                    au.UserPassword = (string)sdr["UserPassword"];
+                    au.UserID = (int)sdr["UserID"];
+                    au.UserName = Convert.ToString(sdr["UserName"]);
+                    au.UserPassword = Convert.ToString(sdr["UserPassword"]);
+                    au.UserMail = Convert.ToString(sdr["UserMail"]);
+                    au.UserAdress = Convert.ToString(sdr["UserAdress"]);
                     //if the user exist and the password metch so I return appuser, else au = null
                 }
                 else { au = null; }
