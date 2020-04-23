@@ -218,14 +218,17 @@ namespace CheapListBackEnd.Repository
                     {
                         replaceTheName = contact.Name;
                     }
-                    query += $" (\"{replaceTheName}\",\"{contact.PhoneNumber}\", @userID2Associate)),";
+                    query += $" (\"{replaceTheName}\",\"{contact.PhoneNumber}\", @userID2Associate),";
 
                 }
                 query = query.Substring(0, query.Length - 1);
                 query += "select @userID2Associate as userID";
 
                 cmd = new SqlCommand(query, con);
-                return (int)cmd.ExecuteScalar();
+
+                int res = (int)cmd.ExecuteScalar();
+
+                return res;
             }
             catch (Exception ex)
             {
