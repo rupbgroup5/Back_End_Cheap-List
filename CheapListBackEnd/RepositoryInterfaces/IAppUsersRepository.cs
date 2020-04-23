@@ -11,7 +11,7 @@ namespace CheapListBackEnd.RepositoryInterfaces
     public interface IAppUsersRepository 
     {
         IEnumerable<AppUser> GetAllAppUsers();
-        AppUser GetAppUserByName(string userName);
+        AppUser GetAppUserByID(int userID);
         AppUser GetUser_forgotPass(string userMail);
         void PostAppUser(AppUser newUser);
         int DeleteAppUser(int id);

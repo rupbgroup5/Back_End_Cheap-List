@@ -55,7 +55,7 @@ namespace CheapListBackEnd.Repository
 
         }
 
-        public AppUser GetAppUserByName(string userName)
+        public AppUser GetAppUserByID(int userID)
         {
             AppUser au = new AppUser();
 
@@ -63,7 +63,7 @@ namespace CheapListBackEnd.Repository
             {
                 con = connect(false);
 
-                string query = $"select * from temp_AppUser where UserName = '{userName}'";
+                string query = $"select * from AppUser where userID = '{userID}'";
 
                 cmd = new SqlCommand(query, con);
 
@@ -72,10 +72,10 @@ namespace CheapListBackEnd.Repository
                 while (sdr.Read())
                 {
                     au.UserID = (int)sdr["UserID"];
-                    au.UserName = (string)sdr["UserName"];
-                    au.UserPassword = (string)sdr["UserPassword"];
-                    au.UserMail = (string)sdr["UserMail"];
-                    au.UserAdress = (string)sdr["UserAdress"];
+                    au.UserName = Convert.ToString(sdr["UserName"]);
+                    au.UserPassword = Convert.ToString(sdr["UserPassword"]);
+                    au.UserMail = Convert.ToString(sdr["UserMail"]); 
+                    au.UserAdress = Convert.ToString(sdr["UserAdress"]); 
                 }
                 return au;
             }

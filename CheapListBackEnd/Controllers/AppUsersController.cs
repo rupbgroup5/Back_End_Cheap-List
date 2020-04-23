@@ -36,14 +36,20 @@ namespace CheapListBackEnd.Controllers
         }
 
         [HttpGet]
-        [Route("api/AppUsers/GetUser/{userName}")]
-        public IHttpActionResult GetUser(string userName) 
+        [Route("api/AppUsers/GetUser/{userID}")]
+        public IHttpActionResult GetUser(int userID) 
         {
-            // base is instead: AppUser appUser = repo.GetAppUserByName(userName);
+            // option to modify return base.OK(GetAppUserByName(userName));
             // NOT TESTED yet
             try
             {
-                return base.Ok(repo.GetAppUserByName(userName));
+                AppUser appUser = repo.GetAppUserByID(userID);
+                return appUser.UserID > 0 ? Ok(appUser) :
+                throw new EntryPointNotFoundException($"there is no user with the provided id");
+            }
+            catch (EntryPointNotFoundException ex)
+            {
+                return Content(HttpStatusCode.BadRequest, ex.Message);
             }
             catch (Exception ex)
             {
