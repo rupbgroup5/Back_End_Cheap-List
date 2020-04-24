@@ -15,8 +15,6 @@ namespace CheapListBackEnd.Reposiroty
             List<AppList> allLists = new List<AppList>();
             SqlConnection con = null;
 
-            
-
             try
           {
                 con = connect(false);

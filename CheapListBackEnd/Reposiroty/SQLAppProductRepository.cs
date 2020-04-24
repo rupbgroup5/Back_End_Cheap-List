@@ -59,10 +59,6 @@ namespace CheapListBackEnd.Reposiroty
             SqlCommand cmd;
             try
             {
-                if (appProduct.product_name.Contains('"'))
-                {
-                    string a = appProduct.product_name.Replace('"', '`');
-                }
                 con = connect(false);
                 string str = "SET QUOTED_IDENTIFIER OFF" +
                               " insert into AppProduct (product_barcode, product_name, product_description, product_image, manufacturer_name, store_id,estimatedProductPrice) " +
