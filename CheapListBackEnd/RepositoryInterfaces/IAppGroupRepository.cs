@@ -9,8 +9,8 @@ namespace CheapListBackEnd.RepositoryInterfaces
 {
     public interface IAppGroupRepository
     {
-        IEnumerable<AppGroup> GetAllGroups();
-        AppGroup GetAppGroupById(int id);
+        List<AppGroup> GetAllGroups();
+        List<AppGroup> GetAppGroupById(int id);
         AppGroup PostAppGroup(AppGroup appGroup);
         int DeleteAppGroup(int id);
         int UpdateGroupName(AppGroup appGroup);

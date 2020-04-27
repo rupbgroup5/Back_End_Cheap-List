@@ -20,7 +20,7 @@ namespace CheapListBackEnd.Controllers
         {
             try
             {
-                List<AppGroup> AppGroupsList = repo.GetAllGroups().ToList();
+                IEnumerable<AppGroup> AppGroupsList = repo.GetAllGroups().ToList();
                 return Ok(AppGroupsList);
             }
             catch (Exception ex)
@@ -37,8 +37,8 @@ namespace CheapListBackEnd.Controllers
         {
             try
             {
-                AppGroup AppGroup = repo.GetAppGroupById(id);
-                return Ok(AppGroup);
+              IEnumerable<AppGroup> appGroupsList = repo.GetAppGroupById(id);
+                return Ok(appGroupsList);
             }
             catch (Exception ex)
             {

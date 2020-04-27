@@ -10,7 +10,7 @@ namespace CheapListBackEnd.Reposiroty
 {
     public class SQLAppGroupRepository : SQLGeneralRepository, IAppGroupRepository
     {
-        public IEnumerable<AppGroup> GetAllGroups()
+        public List<AppGroup> GetAllGroups()
         {
             List<AppGroup> allGroups = new List<AppGroup>();
             SqlConnection con = null;
@@ -46,30 +46,35 @@ namespace CheapListBackEnd.Reposiroty
 
         }
 
-        public AppGroup GetAppGroupById(int id)
+        public List<AppGroup> GetAppGroupById(int id)
         {
 
             SqlConnection con = null;
-
+            List<AppGroup> groupList = new List<AppGroup>();
             try
             {
-                con = connect(true);
+                con = connect(false);
 
-                string query = $"select  * from AppGroup where UserID={id}";
+                string query = "select A.*, U.isAdmin " + 
+                              "from AppGroup A inner " + 
+                              "join UserInGroup U on A.groupID = U.groupID " + 
+                              $"where U.userID = {id}";
 
                 SqlCommand cmd = new SqlCommand(query, con);
 
                 SqlDataReader sdr = cmd.ExecuteReader();
 
-                AppGroup ag = new AppGroup();
-
+  
                 while (sdr.Read())
                 {
+                    AppGroup ag = new AppGroup();
                     ag.GroupID = (int)sdr["groupID"];
                     ag.GroupName = Convert.ToString(sdr["groupName"]);
                     ag.GroupImg = Convert.ToString(sdr["groupImg"]);
+                    ag.IsAdmin = Convert.ToBoolean(sdr["isAdmin"]);
+                    groupList.Add(ag);
                 }
-                return ag;
+                return groupList;
             }
             catch (Exception exp)
             {
