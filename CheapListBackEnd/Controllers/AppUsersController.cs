@@ -158,8 +158,6 @@ namespace CheapListBackEnd.Controllers
             try
             {
                 repo.UpdateUserContactsList(user);
-
-                //manage response....
                 return Ok("user contacts has been updated");
             }
             catch (Exception ex)

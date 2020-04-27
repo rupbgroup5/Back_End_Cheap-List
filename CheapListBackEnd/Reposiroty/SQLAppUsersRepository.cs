@@ -201,8 +201,8 @@ namespace CheapListBackEnd.Repository
             {
 
                 string query = "SET QUOTED_IDENTIFIER OFF\r\n"; // if there is an ' so it wont ruined the insertition
-                query += "insert  into AppUser (UserName, UserMail, UserPassword, UserAdress)\r\n";
-                query += $"VALUES (\"{newUser.UserName}\", \"{newUser.UserMail}\", \"{newUser.UserPassword}\", \"{newUser.UserAdress}\");";
+                query += "insert  into AppUser (UserName, UserMail, UserPassword, wayOf_Registration)\r\n";
+                query += $"VALUES (\"{newUser.UserName}\", \"{newUser.UserMail}\", \"{newUser.UserPassword}\", \"{newUser.WayOf_Registration}\");";
                 query += "declare @userID2Associate int;";
                 query += "set @userID2Associate = Scope_identity()";
 
