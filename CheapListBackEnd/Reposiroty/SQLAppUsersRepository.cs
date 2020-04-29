@@ -395,5 +395,36 @@ namespace CheapListBackEnd.Repository
                 con.Close();
             }
         }
+
+
+        public int UpdateUserExpoToken(AppUser user)
+        {
+            try
+            {
+                con = connect(false); // true?
+
+                string query = $"exec spAppUser_UpdateUserExpoToken @NewToken='{user.ExpoToken}', @userID={user.UserID}";
+
+                cmd = new SqlCommand(query, con);
+
+                int res = cmd.ExecuteNonQuery();
+                return res;
+
+            }
+            catch (Exception exp)
+            {
+                throw (exp);
+            }
+            finally
+            {
+                con.Close();
+            }
+
+        }
+
+
+
+
+
     }
 }

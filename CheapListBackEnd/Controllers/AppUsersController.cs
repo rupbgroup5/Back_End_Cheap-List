@@ -181,6 +181,28 @@ namespace CheapListBackEnd.Controllers
         }
 
 
+        [HttpPost]
+        [Route("api/AppUsers/updateUserExpoToken")]
+        public IHttpActionResult UpdateUserExpoToken([FromBody]AppUser user)
+        {
+            try
+            {
+                int res = repo.UpdateUserExpoToken(user);
+                return res > 0 ? Ok("user's Expo Token Updated in the App DB")
+                :
+                throw new EntryPointNotFoundException
+                ($"there is no user with the provided id ({user.UserID})");
+            }
+            catch (EntryPointNotFoundException ex)
+            {
+                return Content(HttpStatusCode.BadRequest, ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return Content(HttpStatusCode.BadRequest, ex);
+            }
+        }
+
 
         // DELETE api/<controller>/5
         public IHttpActionResult Delete(int id)

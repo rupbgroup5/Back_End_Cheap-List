@@ -15,6 +15,7 @@ namespace CheapListBackEnd.Models
         public List<Contact> Contacts { get; set; }
         public string WayOf_Registration { get; set; }
         public string SocialID { get; set; }
+        public string ExpoToken { get; set; }
 
     }
 }

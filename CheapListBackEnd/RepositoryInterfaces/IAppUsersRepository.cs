@@ -20,5 +20,6 @@ namespace CheapListBackEnd.RepositoryInterfaces
         void UpdateUserContactsList(AppUser user);
         List<Contact> GetUserContacts(int userID);
         AppUser GetExsistUserSocailID(string socailID);
+        int UpdateUserExpoToken(AppUser user);
     }
 }
