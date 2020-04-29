@@ -111,6 +111,20 @@ namespace CheapListBackEnd.Controllers
             
         }
 
+        [HttpGet]
+        [Route("api/AppUsers/GetExsistUserSocailID/{socailID}")]
+        public IHttpActionResult GetExsistUserSocailID(string socailID)
+        {
+            try
+            {
+                AppUser userDetails2Client = repo.GetExsistUserSocailID(socailID);
+                return Ok(userDetails2Client);
+            }
+            catch (Exception ex)
+            {
+                return Content(HttpStatusCode.BadRequest, ex);
+            }
+        }
 
 
         [HttpPost]

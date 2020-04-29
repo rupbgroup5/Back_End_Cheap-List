@@ -39,6 +39,8 @@ namespace CheapListBackEnd.Repository
                     au.UserPassword = (string)sdr["UserPassword"];
                     au.UserMail = (string)sdr["UserMail"];
                     au.UserAdress = (string)sdr["UserAdress"];
+                    au.WayOf_Registration = Convert.ToString(sdr["wayOf_Registration"]);
+                    au.SocialID = Convert.ToString(sdr["socialID"]);
 
                     allUsers.Add(au);
                 }
@@ -73,9 +75,12 @@ namespace CheapListBackEnd.Repository
                 {
                     au.UserID = (int)sdr["UserID"];
                     au.UserName = Convert.ToString(sdr["UserName"]);
+                    au.UserMail = Convert.ToString(sdr["UserMail"]);
                     au.UserPassword = Convert.ToString(sdr["UserPassword"]);
-                    au.UserMail = Convert.ToString(sdr["UserMail"]); 
-                    au.UserAdress = Convert.ToString(sdr["UserAdress"]); 
+                    au.UserAdress = Convert.ToString(sdr["UserAdress"]);
+                    au.WayOf_Registration = Convert.ToString(sdr["wayOf_Registration"]);
+                    au.SocialID = Convert.ToString(sdr["socialID"]);
+
                 }
                 return au;
             }
@@ -201,8 +206,8 @@ namespace CheapListBackEnd.Repository
             {
 
                 string query = "SET QUOTED_IDENTIFIER OFF\r\n"; // if there is an ' so it wont ruined the insertition
-                query += "insert  into AppUser (UserName, UserMail, UserPassword, wayOf_Registration)\r\n";
-                query += $"VALUES (\"{newUser.UserName}\", \"{newUser.UserMail}\", \"{newUser.UserPassword}\", \"{newUser.WayOf_Registration}\");";
+                query += "insert  into AppUser (UserName, UserMail, UserPassword, wayOf_Registration, socialID)\r\n";
+                query += $"VALUES (\"{newUser.UserName}\", \"{newUser.UserMail}\", \"{newUser.UserPassword}\", \"{newUser.WayOf_Registration}\", \"{newUser.SocialID}\");";
                 query += "declare @userID2Associate int;";
                 query += "set @userID2Associate = Scope_identity()";
 
@@ -275,9 +280,9 @@ namespace CheapListBackEnd.Repository
             {
                 con = connect(false);
                 string query = "SET QUOTED_IDENTIFIER OFF \r\n";
-                 query += $"delete Contacts where AppUserID={user.UserID} ";
-                 query += "insert into Contacts(ContactName, ContactPhoneNumber, AppUserID) values ";
-                
+                query += $"delete Contacts where AppUserID={user.UserID} ";
+                query += "insert into Contacts(ContactName, ContactPhoneNumber, AppUserID) values ";
+
                 foreach (var contact in user.Contacts)
                 {
                     string replaceTheName = "";
@@ -323,7 +328,7 @@ namespace CheapListBackEnd.Repository
                 sdr = cmd.ExecuteReader();
 
                 List<Contact> contacts = new List<Contact>();
-                while(sdr.Read())
+                while (sdr.Read())
                 {
                     Contact c = new Contact();
                     c.Name = (string)sdr["ContactName"];
@@ -342,6 +347,53 @@ namespace CheapListBackEnd.Repository
                 con.Close();
             }
 
+        }
+
+        public AppUser GetExsistUserSocailID(string socailID)
+        {
+
+
+            AppUser au;
+
+            try
+            {
+                con = connect(false);
+
+                string query = $"exec sp_AppUser_GetUserBySocialID @ProvidedSocialID = '{socailID}'";
+
+                cmd = new SqlCommand(query, con);
+
+                sdr = cmd.ExecuteReader();
+
+                if (sdr.Read())
+                {
+                    au = new AppUser()
+                    {
+
+                        UserID = (int)sdr["UserID"],
+                        UserName = Convert.ToString(sdr["UserName"]),
+                        UserMail = Convert.ToString(sdr["UserMail"]),
+                        UserPassword = Convert.ToString(sdr["UserPassword"]),
+                        UserAdress = Convert.ToString(sdr["UserAdress"]),
+                        WayOf_Registration = Convert.ToString(sdr["wayOf_Registration"]),
+                        SocialID = Convert.ToString(sdr["socialID"])
+
+                    };
+                }
+                else
+                {
+                    au = new AppUser(); //EMPTY OBJECT....
+                }
+                return au;
+            }
+            catch (Exception exp)
+            {
+                throw (exp);
+            }
+            finally
+            {
+                con.Close();
+            }
         }
     }
 }
