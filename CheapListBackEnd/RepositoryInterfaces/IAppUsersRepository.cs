@@ -12,7 +12,7 @@ namespace CheapListBackEnd.RepositoryInterfaces
     {
         IEnumerable<AppUser> GetAllAppUsers();
         AppUser GetAppUserByID(int userID);
-        AppUser GetUser_forgotPass(string userMail);
+        string UserForgotPassword(string userMail);
         int PostAppUser(AppUser newUser);
         int DeleteAppUser(int id);
         int UpdateFeild(UpdateAppUser user2epdate);

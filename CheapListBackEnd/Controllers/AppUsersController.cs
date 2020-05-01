@@ -1,11 +1,9 @@
-﻿//using CheapListBackEnd.Interfaces;
-using CheapListBackEnd.Models;
+﻿using CheapListBackEnd.Models;
 using CheapListBackEnd.RepositoryInterfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-//using System.Net.Http;
 using System.Web.Http;
 
 namespace CheapListBackEnd.Controllers
@@ -59,8 +57,8 @@ namespace CheapListBackEnd.Controllers
 
 
         [HttpGet]
-        [Route("api/AppUsers/GetUserPass/{fullmailNoDots}")]
-        public IHttpActionResult GetUserPass(string fullmailNoDots) //forgot password I want it to be send to the user mail
+        [Route("api/AppUsers/SendUserPassword/{fullmailNoDots}")]
+        public IHttpActionResult SendUserPassword(string fullmailNoDots)
         /*cant get . so we change it to "_" at our front-end
         * and back to "." here
         */
@@ -68,8 +66,8 @@ namespace CheapListBackEnd.Controllers
             string userMail = fullmailNoDots.Replace("_",".");
             try
             {
-                AppUser user = repo.GetUser_forgotPass(userMail);
-                return Ok(user);
+                string response = repo.UserForgotPassword(userMail);
+                return Ok(response);
             }
             catch (Exception ex)
             {

@@ -5,7 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Web;
+using System.Net;
+using System.Net.Mail;
 using System.Web.Configuration;
 
 namespace CheapListBackEnd.Repository
@@ -94,7 +95,7 @@ namespace CheapListBackEnd.Repository
             }
         }
 
-        public AppUser GetUser_forgotPass(string userMail)
+        public string UserForgotPassword(string userMail)
         {
 
             try
@@ -113,8 +114,15 @@ namespace CheapListBackEnd.Repository
                     au.UserMail = (string)sdr["userMail"];
                     au.UserPassword = (string)sdr["UserPassword"];
                 }
-
-                return au;
+                try
+                {
+                    SendMail(au.UserMail, au.UserPassword);
+                    return $"the password sent to the user mail: {au.UserMail}";
+                }
+                catch (Exception exp)
+                {
+                    throw exp;
+                }
 
             }
             catch (Exception exp)
@@ -126,6 +134,40 @@ namespace CheapListBackEnd.Repository
                 con.Close();
             }
         }
+
+        public static void SendMail(string toAddress, string userPassword)
+        {
+            string password = WebConfigurationManager.AppSettings["SecurePassword"];
+            var smtp = new SmtpClient
+            {
+                Host = "Smtp.gmail.com",
+                Port = 587,
+                EnableSsl = true,
+                DeliveryMethod = SmtpDeliveryMethod.Network,
+                UseDefaultCredentials = false,
+            Credentials = new NetworkCredential("rupbgroup5@gmail.com", password)
+            };
+
+            using (var mailMessage = new MailMessage("rupbgroup5@gmail.com", toAddress)
+            {
+                Subject = "צוות אויש שחכתי cheap list",
+                Body = "" +
+                "אהלן, הבנו ששחכת את הסיסמה ?\r\n" +
+                "שום בעיה ! \r\n" +
+                "הנה הסיסמה שלך כמו שהיא שמורה אצלנו \r\n" +
+                $"{userPassword} \r\n" +
+                $"צוות אויש שחכתי מאחל לכם המשך קנייה חכמה =] ",
+            })
+                try
+                {
+                    smtp.Send(mailMessage);
+                }
+                catch (Exception exp)
+                {
+                    throw new Exception($"something went wrong in SendMail method: \n {exp.Message}");
+                }
+        }
+
 
         public AppUser AuthenticateUserLogin(string userName, string password)
         {
@@ -351,10 +393,7 @@ namespace CheapListBackEnd.Repository
 
         public AppUser GetExsistUserSocailID(string socailID)
         {
-
-
             AppUser au;
-
             try
             {
                 con = connect(false);
@@ -396,7 +435,6 @@ namespace CheapListBackEnd.Repository
             }
         }
 
-
         public int UpdateUserExpoToken(AppUser user)
         {
             try
@@ -421,10 +459,6 @@ namespace CheapListBackEnd.Repository
             }
 
         }
-
-
-
-
 
     }
 }
