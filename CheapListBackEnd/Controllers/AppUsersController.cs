@@ -35,7 +35,7 @@ namespace CheapListBackEnd.Controllers
 
         [HttpGet]
         [Route("api/AppUsers/GetUser/{userID}")]
-        public IHttpActionResult GetUser(int userID) 
+        public IHttpActionResult GetUser(int userID)
         {
             // option to modify return base.OK(GetAppUserByName(userName));
             // NOT TESTED yet
@@ -63,7 +63,7 @@ namespace CheapListBackEnd.Controllers
         * and back to "." here
         */
         {
-            string userMail = fullmailNoDots.Replace("_",".");
+            string userMail = fullmailNoDots.Replace("_", ".");
             try
             {
                 string response = repo.UserForgotPassword(userMail);
@@ -77,10 +77,10 @@ namespace CheapListBackEnd.Controllers
 
 
         [HttpGet]
-        [Route("api/AppUsers/AuthenticateUserLogin/{userName}/{userPassword}")] 
+        [Route("api/AppUsers/AuthenticateUserLogin/{userName}/{userPassword}")]
         public IHttpActionResult AuthenticateUserLogin(string userName, string userPassword)
         {
-            
+
             try
             {
                 AppUser au = repo.AuthenticateUserLogin(userName, userPassword);
@@ -106,7 +106,7 @@ namespace CheapListBackEnd.Controllers
             {
                 return Content(HttpStatusCode.BadRequest, ex);
             }
-            
+
         }
 
         [HttpGet]
@@ -124,6 +124,20 @@ namespace CheapListBackEnd.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("api/AppUsers/IsExpoTokenUpdated/{userID}")]
+        public IHttpActionResult IsExpoTokenUpdated(int userID)
+        {
+            try
+            {
+                bool response = repo.IsExpoTokenUpdated(userID);
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return Content(HttpStatusCode.BadRequest, ex);
+            }
+        }
 
         [HttpPost]
         [Route("api/AppUsers/PostUser")]
@@ -139,7 +153,6 @@ namespace CheapListBackEnd.Controllers
                 return Content(HttpStatusCode.BadRequest, ex);
             }
         }
-
 
         // PUT api/<controller>/5
         // col 2 update could be either: UserMail, UserPassword, UserName, User Adress

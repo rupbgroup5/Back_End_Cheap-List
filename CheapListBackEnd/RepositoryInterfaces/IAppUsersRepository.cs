@@ -21,5 +21,7 @@ namespace CheapListBackEnd.RepositoryInterfaces
         List<Contact> GetUserContacts(int userID);
         AppUser GetExsistUserSocailID(string socailID);
         int UpdateUserExpoToken(AppUser user);
+        bool IsExpoTokenUpdated(int userID);
+
     }
 }

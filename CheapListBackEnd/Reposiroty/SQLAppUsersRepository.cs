@@ -168,7 +168,6 @@ namespace CheapListBackEnd.Repository
                 }
         }
 
-
         public AppUser AuthenticateUserLogin(string userName, string password)
         {
             AppUser au = new AppUser();
@@ -441,7 +440,8 @@ namespace CheapListBackEnd.Repository
             {
                 con = connect(false); // true?
 
-                string query = $"exec spAppUser_UpdateUserExpoToken @NewToken='{user.ExpoToken}', @userID={user.UserID}";
+                string query = $"exec spAppUser_UpdateUserExpoToken @NewToken='{user.ExpoToken}', " +
+                    $"@userID={user.UserID}, @intStempOfToday={user.Register_Date_numberRepresntation}";
 
                 cmd = new SqlCommand(query, con);
 
@@ -460,5 +460,39 @@ namespace CheapListBackEnd.Repository
 
         }
 
+        public bool IsExpoTokenUpdated(int userID)
+        {
+            AppUser au;
+            bool returnValue = false;
+            try
+            {
+                con = connect(false);
+
+                string query = $"";
+
+                cmd = new SqlCommand(query, con);
+
+                sdr = cmd.ExecuteReader();
+
+                if (sdr.Read())
+                {
+                    au = new AppUser(){Register_Date_numberRepresntation = (int)sdr["Register_Date_numberRepresntation"]};
+                }
+                else
+                {
+                    throw new EntryPointNotFoundException($"there is no such user with the provided ID: {userID}");
+                }
+
+                return returnValue;
+            }
+            catch (Exception exp)
+            {
+                throw (exp);
+            }
+            finally
+            {
+                con.Close();
+            }
+        }
     }
 }
