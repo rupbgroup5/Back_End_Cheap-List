@@ -111,6 +111,20 @@ namespace CheapListBackEnd.Controllers
             
         }
 
+        [HttpGet]
+        [Route("api/AppUsers/AuthenticateContact/{phoneNumber}")]
+        public IHttpActionResult AuthenticateContact(string phoneNumber) {
+            try
+            {
+                AppUser appUser = repo.AuthenticateContact(phoneNumber);
+                return Ok(appUser);
+                
+            }
+            catch (Exception ex)
+            {
+                return Content(HttpStatusCode.BadRequest, ex);
+            }
+        }
 
 
         [HttpPost]
@@ -119,8 +133,22 @@ namespace CheapListBackEnd.Controllers
         {
             try
             {
-                int newUserID = repo.PostAppUser(newUser);
+               int newUserID =  repo.PostAppUser(newUser);
                 return Ok(newUserID);
+            }
+            catch (Exception ex)
+            {
+                return Content(HttpStatusCode.BadRequest, ex);
+            }
+        }
+
+        [HttpPost]
+        [Route("api/AppUsers/SystemPostUser")]
+        public IHttpActionResult SystemPostUser([FromBody] AppUser userBySystem) {
+            try
+            {
+                 repo.PostSystemAppUser(userBySystem);
+                return Ok(userBySystem);
             }
             catch (Exception ex)
             {

@@ -12,7 +12,8 @@ namespace CheapListBackEnd.Models
         public string GroupName { get; set; }
         public string GroupImg { get; set; }
         public int UserID { get; set; }
-        public bool IsAdmin { get; set; }
+        public List<AppUser> Participiants { get; set; }
+
 
     }
 }

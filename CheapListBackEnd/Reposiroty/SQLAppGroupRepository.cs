@@ -54,25 +54,39 @@ namespace CheapListBackEnd.Reposiroty
             try
             {
                 con = connect(false);
+                string query = $" exec dbo.spAppGroup_GetGroupByUserID @UserID = {id}";
 
-                string query = "select A.*, U.isAdmin " + 
-                              "from AppGroup A inner " + 
-                              "join UserInGroup U on A.groupID = U.groupID " + 
-                              $"where U.userID = {id}";
-
-                SqlCommand cmd = new SqlCommand(query, con);
+            SqlCommand cmd = new SqlCommand(query, con);
 
                 SqlDataReader sdr = cmd.ExecuteReader();
 
-  
                 while (sdr.Read())
                 {
                     AppGroup ag = new AppGroup();
                     ag.GroupID = (int)sdr["groupID"];
                     ag.GroupName = Convert.ToString(sdr["groupName"]);
                     ag.GroupImg = Convert.ToString(sdr["groupImg"]);
-                    ag.IsAdmin = Convert.ToBoolean(sdr["isAdmin"]);
                     groupList.Add(ag);
+                }
+
+                
+
+                foreach (var group in groupList)
+                {
+                    con.Close();
+                    con = connect(false);
+                    query = $"exec dbo.spUserInGroup_GetMembersByGroupID @groupID = {group.GroupID}";
+                    cmd = new SqlCommand(query, con);
+                    sdr = cmd.ExecuteReader();
+                    group.Participiants = new List<AppUser>();
+                    while (sdr.Read())
+                    {
+                        AppUser au = new AppUser();
+                        au.UserID = (int)sdr["userID"];
+                        au.UserName = (string)sdr["userName"];
+                        au.IsAdmin = Convert.ToBoolean(sdr["isAdmin"]);
+                        group.Participiants.Add(au);
+                    }
                 }
                 return groupList;
             }
@@ -90,19 +104,23 @@ namespace CheapListBackEnd.Reposiroty
         {
             SqlConnection con = null;
             SqlCommand cmd;
-          
+
             try
             {
                 con = connect(false);
                 string str = "DECLARE @LastGroupID int;" +
                              $"insert into AppGroup (groupName) values('{appGroup.GroupName}')" +
                              "select @LastGroupID = SCOPE_IDENTITY();" +
-                             "insert into UserInGroup (userID, groupID, isAdmin) values(" +
-                             $"{appGroup.UserID},@LastGroupID,1)" +
-                             " select @LastGroupID as GroupID";
+                             "insert into UserInGroup (userID, groupID, isAdmin) values " +
+                             $"({appGroup.UserID},@LastGroupID,1),";
 
-                //select userid FROM AppUser WHERE UserName='{appGroup.CreatorName}'
+                foreach (var user in appGroup.Participiants)
+                {
+                    str += $"({user.UserID},@LastGroupID,0),";
 
+                }
+                str = str.Substring(0, str.Length - 1);
+                str += "select @LastGroupID as GroupID";
 
 
                 cmd = new SqlCommand(str, con);

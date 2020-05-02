@@ -19,6 +19,10 @@ namespace CheapListBackEnd.RepositoryInterfaces
         AppUser AuthenticateUserLogin(string userName, string password);
         void UpdateUserContactsList(AppUser user);
         List<Contact> GetUserContacts(int userID);
+        AppUser AuthenticateContact(string phoneNumber);
+        int PostSystemAppUser(AppUser userBySystem);
+
+        
 
 
     }

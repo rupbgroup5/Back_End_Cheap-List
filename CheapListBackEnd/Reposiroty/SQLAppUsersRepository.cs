@@ -4,6 +4,7 @@ using CheapListBackEnd.RepositoryInterfaces;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Drawing;
 using System.Linq;
 using System.Web;
 using System.Web.Configuration;
@@ -36,9 +37,13 @@ namespace CheapListBackEnd.Repository
 
                     au.UserID = (int)sdr["UserID"];
                     au.UserName = (string)sdr["UserName"];
-                    au.UserPassword = (string)sdr["UserPassword"];
-                    au.UserMail = (string)sdr["UserMail"];
-                    au.UserAdress = (string)sdr["UserAdress"];
+                    au.UserPassword = Convert.ToString(sdr["UserPassword"]);
+                    au.UserMail = Convert.ToString(sdr["UserMail"]);
+                    au.UserAdress = Convert.ToString(sdr["UserAdress"]);
+                    au.WayOf_Registration = Convert.ToString(sdr["wayOF_Registration"]);
+                    au.SocialID = Convert.ToString(sdr["socialID"]);
+                    au.ExpoToken = Convert.ToString(sdr["ExpoToken"]);
+                    au.PhoneNumber = Convert.ToString(sdr["PhoneNumber"]);
 
                     allUsers.Add(au);
                 }
@@ -72,10 +77,14 @@ namespace CheapListBackEnd.Repository
                 while (sdr.Read())
                 {
                     au.UserID = (int)sdr["UserID"];
-                    au.UserName = Convert.ToString(sdr["UserName"]);
+                    au.UserName = (string)sdr["UserName"];
                     au.UserPassword = Convert.ToString(sdr["UserPassword"]);
-                    au.UserMail = Convert.ToString(sdr["UserMail"]); 
-                    au.UserAdress = Convert.ToString(sdr["UserAdress"]); 
+                    au.UserMail = Convert.ToString(sdr["UserMail"]);
+                    au.UserAdress = Convert.ToString(sdr["UserAdress"]);
+                    au.WayOf_Registration = Convert.ToString(sdr["wayOF_Registration"]);
+                    au.SocialID = Convert.ToString(sdr["socialID"]);
+                    au.ExpoToken = Convert.ToString(sdr["ExpoToken"]);
+                    au.PhoneNumber = Convert.ToString(sdr["PhoneNumber"]);
                 }
                 return au;
             }
@@ -106,7 +115,7 @@ namespace CheapListBackEnd.Repository
                 {
                     au.UserID = (int)sdr["userID"];
                     au.UserMail = (string)sdr["userMail"];
-                    au.UserPassword = (string)sdr["UserPassword"];
+                    au.UserPassword = Convert.ToString(sdr["UserPassword"]);
                 }
 
                 return au;
@@ -201,24 +210,51 @@ namespace CheapListBackEnd.Repository
             {
 
                 string query = "SET QUOTED_IDENTIFIER OFF\r\n"; // if there is an ' so it wont ruined the insertition
-                query += "insert  into AppUser (UserName, UserMail, UserPassword, wayOf_Registration)\r\n";
-                query += $"VALUES (\"{newUser.UserName}\", \"{newUser.UserMail}\", \"{newUser.UserPassword}\", \"{newUser.WayOf_Registration}\");";
+                query += "insert  into AppUser (UserName, UserMail, UserPassword, wayOf_Registration, socialID, ExpoToken, PhoneNumber)\r\n";
+                query += $"VALUES (\"{newUser.UserName}\", \"{newUser.UserMail}\", \"{newUser.UserPassword}\", \"{newUser.WayOf_Registration}\", \"{newUser.SocialID}\",";
+                query += $"\"{newUser.ExpoToken}\",\"{newUser.PhoneNumber}\"); "; 
                 query += "declare @userID2Associate int;";
                 query += "set @userID2Associate = Scope_identity()";
 
                 query += "insert into Contacts (ContactName, ContactPhoneNumber, AppUserID) VALUES";
                 foreach (var contact in newUser.Contacts)
                 {
-                    string replaceTheName = "";
-                    if (contact.Name.Contains('"'))
+                    if (contact.PhoneNumber.Length >= 10)
                     {
-                        replaceTheName = contact.Name.Replace('"', '`');
+                        string replaceTheName = "";
+                        if (contact.Name.Contains('"'))
+                        {
+                            replaceTheName = contact.Name.Replace('"', '`');
+                        }
+                        else replaceTheName = contact.Name;
+
+                        string tempTrim = contact.PhoneNumber.Trim();
+                        string temp = tempTrim;
+                        if (tempTrim.Contains(' '))
+                        {
+                            temp = tempTrim.Replace(" ", "");
+                        }
+                        string temp2 = temp;
+                        if (temp.Contains('-'))
+                        {
+                            temp2 = temp.Replace("-", "");
+                        }
+
+                        string formatContact = temp2;
+
+                        if (temp2[0] == '+')
+                        {
+                            formatContact = temp2.Remove(0, 4);
+                            formatContact = '0' + formatContact;
+                        }
+                        else if (temp2[0] == '9')
+                        {
+                            formatContact = temp2.Remove(0, 3);
+                            formatContact = '0' + formatContact;
+                        }
+
+                        query += $" (\"{replaceTheName}\",\"{formatContact}\", @userID2Associate),  ";
                     }
-                    else
-                    {
-                        replaceTheName = contact.Name;
-                    }
-                    query += $" (\"{replaceTheName}\",\"{contact.PhoneNumber}\", @userID2Associate),";
 
                 }
                 query = query.Substring(0, query.Length - 1);
@@ -240,6 +276,37 @@ namespace CheapListBackEnd.Repository
             }
 
 
+        }
+
+        public int PostSystemAppUser(AppUser userBySystem)
+        {
+            SqlConnection con = null;
+            SqlCommand cmd;
+
+            try
+            {
+                con = connect(false);
+                string str = $"exec dbo.spAppUser_InsertUserBySystem @UserName='{userBySystem.UserName}', @WayOf_Registration='system', @PhoneNumber = '{userBySystem.PhoneNumber}'";
+
+
+                cmd = new SqlCommand(str, con);
+                userBySystem.UserID = Convert.ToInt32(cmd.ExecuteScalar());
+                return userBySystem.UserID;
+
+            }
+            catch (Exception ex)
+            {
+                return 0;
+                throw (ex);
+
+            }
+            finally
+            {
+                if (con != null)
+                {
+                    con.Close();
+                }
+            }
         }
 
         public int UpdateFeild(UpdateAppUser user2update)
@@ -275,21 +342,50 @@ namespace CheapListBackEnd.Repository
             {
                 con = connect(false);
                 string query = "SET QUOTED_IDENTIFIER OFF \r\n";
-                 query += $"delete Contacts where AppUserID={user.UserID} ";
-                 query += "insert into Contacts(ContactName, ContactPhoneNumber, AppUserID) values ";
-                
+                query += $"delete Contacts where AppUserID={user.UserID} ";
+                query += "insert into Contacts(ContactName, ContactPhoneNumber, AppUserID) values ";
+
                 foreach (var contact in user.Contacts)
                 {
-                    string replaceTheName = "";
-                    if (contact.Name.Contains('"'))
+                    if (contact.PhoneNumber.Length >= 10)
                     {
-                        replaceTheName = contact.Name.Replace('"', '`');
+                        string replaceTheName = "";
+                        if (contact.Name.Contains('"'))
+                        {
+                            replaceTheName = contact.Name.Replace('"', '`');
+                        }
+                        else replaceTheName = contact.Name;
+
+                        string tempTrim = contact.PhoneNumber.Trim();
+                        string temp = tempTrim;
+                        if (tempTrim.Contains(' '))
+                        {
+                            temp = tempTrim.Replace(" ", "");
+                        }
+                        string temp2 = temp;
+                        if (temp.Contains('-'))
+                        {
+                            temp2 = temp.Replace("-", "");
+                            
+
+                        }
+
+                        string formatContact = temp2;
+
+                        if (temp2[0] == '+')
+                        {
+                            formatContact = temp2.Remove(0, 4);
+                            formatContact = '0' + formatContact;
+                        }
+                        else if (temp2[0] == '9')
+                        {
+                            formatContact = temp2.Remove(0, 3);
+                            formatContact = '0' + formatContact;
+                        }
+
+                        query += $" (\"{replaceTheName}\",\"{formatContact}\", {user.UserID}),";
                     }
-                    else
-                    {
-                        replaceTheName = contact.Name;
-                    }
-                    query += $" (\"{replaceTheName}\",\"{contact.PhoneNumber}\", {user.UserID}),";
+
 
                 }
                 query = query.Substring(0, query.Length - 1);
@@ -323,7 +419,7 @@ namespace CheapListBackEnd.Repository
                 sdr = cmd.ExecuteReader();
 
                 List<Contact> contacts = new List<Contact>();
-                while(sdr.Read())
+                while (sdr.Read())
                 {
                     Contact c = new Contact();
                     c.Name = (string)sdr["ContactName"];
@@ -343,5 +439,41 @@ namespace CheapListBackEnd.Repository
             }
 
         }
+
+        public AppUser AuthenticateContact(string phoneNumber)
+        {
+            try
+            {
+                con = connect(false);
+
+                string query = $"exec dbo.spAppUser_GetUserByPhoneNumber @PhoneNumber = '{phoneNumber}'";
+
+                cmd = new SqlCommand(query, con);
+
+                sdr = cmd.ExecuteReader();
+
+                AppUser au = new AppUser();
+
+                while (sdr.Read())
+                {
+                    au.UserID = (int)sdr["UserID"];
+                    au.UserName = (string)sdr["UserName"];
+                    au.UserMail = Convert.ToString(sdr["UserMail"]);
+                    au.ExpoToken = Convert.ToString(sdr["ExpoToken"]);
+                    au.PhoneNumber = Convert.ToString(sdr["PhoneNumber"]);
+                }
+                return au;
+            }
+            catch (Exception exp)
+            {
+                throw (exp);
+            }
+            finally
+            {
+                con.Close();
+            }
+        }
+
+      
     }
 }
