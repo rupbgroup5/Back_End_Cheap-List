@@ -6,7 +6,8 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Drawing;
 using System.Linq;
-using System.Web;
+using System.Net;
+using System.Net.Mail;
 using System.Web.Configuration;
 
 namespace CheapListBackEnd.Repository
@@ -37,6 +38,7 @@ namespace CheapListBackEnd.Repository
 
                     au.UserID = (int)sdr["UserID"];
                     au.UserName = (string)sdr["UserName"];
+<<<<<<< HEAD
                     au.UserPassword = Convert.ToString(sdr["UserPassword"]);
                     au.UserMail = Convert.ToString(sdr["UserMail"]);
                     au.UserAdress = Convert.ToString(sdr["UserAdress"]);
@@ -44,6 +46,13 @@ namespace CheapListBackEnd.Repository
                     au.SocialID = Convert.ToString(sdr["socialID"]);
                     au.ExpoToken = Convert.ToString(sdr["ExpoToken"]);
                     au.PhoneNumber = Convert.ToString(sdr["PhoneNumber"]);
+=======
+                    au.UserPassword = (string)sdr["UserPassword"];
+                    au.UserMail = (string)sdr["UserMail"];
+                    au.UserAdress = (string)sdr["UserAdress"];
+                    au.WayOf_Registration = Convert.ToString(sdr["wayOf_Registration"]);
+                    au.SocialID = Convert.ToString(sdr["socialID"]);
+>>>>>>> 17c6f29ae26c8b7bb4bfb42b92403ea1a86c75db
 
                     allUsers.Add(au);
                 }
@@ -77,6 +86,7 @@ namespace CheapListBackEnd.Repository
                 while (sdr.Read())
                 {
                     au.UserID = (int)sdr["UserID"];
+<<<<<<< HEAD
                     au.UserName = (string)sdr["UserName"];
                     au.UserPassword = Convert.ToString(sdr["UserPassword"]);
                     au.UserMail = Convert.ToString(sdr["UserMail"]);
@@ -85,6 +95,15 @@ namespace CheapListBackEnd.Repository
                     au.SocialID = Convert.ToString(sdr["socialID"]);
                     au.ExpoToken = Convert.ToString(sdr["ExpoToken"]);
                     au.PhoneNumber = Convert.ToString(sdr["PhoneNumber"]);
+=======
+                    au.UserName = Convert.ToString(sdr["UserName"]);
+                    au.UserMail = Convert.ToString(sdr["UserMail"]);
+                    au.UserPassword = Convert.ToString(sdr["UserPassword"]);
+                    au.UserAdress = Convert.ToString(sdr["UserAdress"]);
+                    au.WayOf_Registration = Convert.ToString(sdr["wayOf_Registration"]);
+                    au.SocialID = Convert.ToString(sdr["socialID"]);
+
+>>>>>>> 17c6f29ae26c8b7bb4bfb42b92403ea1a86c75db
                 }
                 return au;
             }
@@ -98,7 +117,7 @@ namespace CheapListBackEnd.Repository
             }
         }
 
-        public AppUser GetUser_forgotPass(string userMail)
+        public string UserForgotPassword(string userMail)
         {
 
             try
@@ -117,8 +136,15 @@ namespace CheapListBackEnd.Repository
                     au.UserMail = (string)sdr["userMail"];
                     au.UserPassword = Convert.ToString(sdr["UserPassword"]);
                 }
-
-                return au;
+                try
+                {
+                    SendMail(au.UserMail, au.UserPassword);
+                    return $"the password sent to the user mail: {au.UserMail}";
+                }
+                catch (Exception exp)
+                {
+                    throw exp;
+                }
 
             }
             catch (Exception exp)
@@ -129,6 +155,39 @@ namespace CheapListBackEnd.Repository
             {
                 con.Close();
             }
+        }
+
+        public static void SendMail(string toAddress, string userPassword)
+        {
+            string password = WebConfigurationManager.AppSettings["SecurePassword"];
+            var smtp = new SmtpClient
+            {
+                Host = "Smtp.gmail.com",
+                Port = 587,
+                EnableSsl = true,
+                DeliveryMethod = SmtpDeliveryMethod.Network,
+                UseDefaultCredentials = false,
+            Credentials = new NetworkCredential("rupbgroup5@gmail.com", password)
+            };
+
+            using (var mailMessage = new MailMessage("rupbgroup5@gmail.com", toAddress)
+            {
+                Subject = "צוות אויש שחכתי cheap list",
+                Body = "" +
+                "אהלן, הבנו ששחכת את הסיסמה ?\r\n" +
+                "שום בעיה ! \r\n" +
+                "הנה הסיסמה שלך כמו שהיא שמורה אצלנו \r\n" +
+                $"{userPassword} \r\n" +
+                $"צוות אויש שחכתי מאחל לכם המשך קנייה חכמה =] ",
+            })
+                try
+                {
+                    smtp.Send(mailMessage);
+                }
+                catch (Exception exp)
+                {
+                    throw new Exception($"something went wrong in SendMail method: \n {exp.Message}");
+                }
         }
 
         public AppUser AuthenticateUserLogin(string userName, string password)
@@ -210,9 +269,14 @@ namespace CheapListBackEnd.Repository
             {
 
                 string query = "SET QUOTED_IDENTIFIER OFF\r\n"; // if there is an ' so it wont ruined the insertition
+<<<<<<< HEAD
                 query += "insert  into AppUser (UserName, UserMail, UserPassword, wayOf_Registration, socialID, ExpoToken, PhoneNumber)\r\n";
                 query += $"VALUES (\"{newUser.UserName}\", \"{newUser.UserMail}\", \"{newUser.UserPassword}\", \"{newUser.WayOf_Registration}\", \"{newUser.SocialID}\",";
                 query += $"\"{newUser.ExpoToken}\",\"{newUser.PhoneNumber}\"); "; 
+=======
+                query += "insert  into AppUser (UserName, UserMail, UserPassword, wayOf_Registration, socialID)\r\n";
+                query += $"VALUES (\"{newUser.UserName}\", \"{newUser.UserMail}\", \"{newUser.UserPassword}\", \"{newUser.WayOf_Registration}\", \"{newUser.SocialID}\");";
+>>>>>>> 17c6f29ae26c8b7bb4bfb42b92403ea1a86c75db
                 query += "declare @userID2Associate int;";
                 query += "set @userID2Associate = Scope_identity()";
 
@@ -440,18 +504,29 @@ namespace CheapListBackEnd.Repository
 
         }
 
+<<<<<<< HEAD
         public AppUser AuthenticateContact(string phoneNumber)
         {
+=======
+        public AppUser GetExsistUserSocailID(string socailID)
+        {
+            AppUser au;
+>>>>>>> 17c6f29ae26c8b7bb4bfb42b92403ea1a86c75db
             try
             {
                 con = connect(false);
 
+<<<<<<< HEAD
                 string query = $"exec dbo.spAppUser_GetUserByPhoneNumber @PhoneNumber = '{phoneNumber}'";
+=======
+                string query = $"exec sp_AppUser_GetUserBySocialID @ProvidedSocialID = '{socailID}'";
+>>>>>>> 17c6f29ae26c8b7bb4bfb42b92403ea1a86c75db
 
                 cmd = new SqlCommand(query, con);
 
                 sdr = cmd.ExecuteReader();
 
+<<<<<<< HEAD
                 AppUser au = new AppUser();
 
                 while (sdr.Read())
@@ -461,6 +536,26 @@ namespace CheapListBackEnd.Repository
                     au.UserMail = Convert.ToString(sdr["UserMail"]);
                     au.ExpoToken = Convert.ToString(sdr["ExpoToken"]);
                     au.PhoneNumber = Convert.ToString(sdr["PhoneNumber"]);
+=======
+                if (sdr.Read())
+                {
+                    au = new AppUser()
+                    {
+
+                        UserID = (int)sdr["UserID"],
+                        UserName = Convert.ToString(sdr["UserName"]),
+                        UserMail = Convert.ToString(sdr["UserMail"]),
+                        UserPassword = Convert.ToString(sdr["UserPassword"]),
+                        UserAdress = Convert.ToString(sdr["UserAdress"]),
+                        WayOf_Registration = Convert.ToString(sdr["wayOf_Registration"]),
+                        SocialID = Convert.ToString(sdr["socialID"])
+
+                    };
+                }
+                else
+                {
+                    au = new AppUser(); //EMPTY OBJECT....
+>>>>>>> 17c6f29ae26c8b7bb4bfb42b92403ea1a86c75db
                 }
                 return au;
             }
@@ -474,6 +569,69 @@ namespace CheapListBackEnd.Repository
             }
         }
 
+<<<<<<< HEAD
       
+=======
+        public int UpdateUserExpoToken(AppUser user)
+        {
+            try
+            {
+                con = connect(false); // true?
+
+                string query = $"exec spAppUser_UpdateUserExpoToken @NewToken='{user.ExpoToken}', " +
+                    $"@userID={user.UserID}, @intStempOfToday={user.Register_Date_numberRepresntation}";
+
+                cmd = new SqlCommand(query, con);
+
+                int res = cmd.ExecuteNonQuery();
+                return res;
+
+            }
+            catch (Exception exp)
+            {
+                throw (exp);
+            }
+            finally
+            {
+                con.Close();
+            }
+
+        }
+
+        public bool IsExpoTokenUpdated(int userID)
+        {
+            AppUser au;
+            bool returnValue = false;
+            try
+            {
+                con = connect(false);
+
+                string query = $"";
+
+                cmd = new SqlCommand(query, con);
+
+                sdr = cmd.ExecuteReader();
+
+                if (sdr.Read())
+                {
+                    au = new AppUser(){Register_Date_numberRepresntation = (int)sdr["Register_Date_numberRepresntation"]};
+                }
+                else
+                {
+                    throw new EntryPointNotFoundException($"there is no such user with the provided ID: {userID}");
+                }
+
+                return returnValue;
+            }
+            catch (Exception exp)
+            {
+                throw (exp);
+            }
+            finally
+            {
+                con.Close();
+            }
+        }
+>>>>>>> 17c6f29ae26c8b7bb4bfb42b92403ea1a86c75db
     }
 }

@@ -1,11 +1,9 @@
-﻿//using CheapListBackEnd.Interfaces;
-using CheapListBackEnd.Models;
+﻿using CheapListBackEnd.Models;
 using CheapListBackEnd.RepositoryInterfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-//using System.Net.Http;
 using System.Web.Http;
 
 namespace CheapListBackEnd.Controllers
@@ -37,7 +35,7 @@ namespace CheapListBackEnd.Controllers
 
         [HttpGet]
         [Route("api/AppUsers/GetUser/{userID}")]
-        public IHttpActionResult GetUser(int userID) 
+        public IHttpActionResult GetUser(int userID)
         {
             // option to modify return base.OK(GetAppUserByName(userName));
             // NOT TESTED yet
@@ -59,17 +57,17 @@ namespace CheapListBackEnd.Controllers
 
 
         [HttpGet]
-        [Route("api/AppUsers/GetUserPass/{fullmailNoDots}")]
-        public IHttpActionResult GetUserPass(string fullmailNoDots) //forgot password I want it to be send to the user mail
+        [Route("api/AppUsers/SendUserPassword/{fullmailNoDots}")]
+        public IHttpActionResult SendUserPassword(string fullmailNoDots)
         /*cant get . so we change it to "_" at our front-end
         * and back to "." here
         */
         {
-            string userMail = fullmailNoDots.Replace("_",".");
+            string userMail = fullmailNoDots.Replace("_", ".");
             try
             {
-                AppUser user = repo.GetUser_forgotPass(userMail);
-                return Ok(user);
+                string response = repo.UserForgotPassword(userMail);
+                return Ok(response);
             }
             catch (Exception ex)
             {
@@ -79,10 +77,10 @@ namespace CheapListBackEnd.Controllers
 
 
         [HttpGet]
-        [Route("api/AppUsers/AuthenticateUserLogin/{userName}/{userPassword}")] 
+        [Route("api/AppUsers/AuthenticateUserLogin/{userName}/{userPassword}")]
         public IHttpActionResult AuthenticateUserLogin(string userName, string userPassword)
         {
-            
+
             try
             {
                 AppUser au = repo.AuthenticateUserLogin(userName, userPassword);
@@ -108,10 +106,11 @@ namespace CheapListBackEnd.Controllers
             {
                 return Content(HttpStatusCode.BadRequest, ex);
             }
-            
+
         }
 
         [HttpGet]
+<<<<<<< HEAD
         [Route("api/AppUsers/AuthenticateContact/{phoneNumber}")]
         public IHttpActionResult AuthenticateContact(string phoneNumber) {
             try
@@ -119,6 +118,15 @@ namespace CheapListBackEnd.Controllers
                 AppUser appUser = repo.AuthenticateContact(phoneNumber);
                 return Ok(appUser);
                 
+=======
+        [Route("api/AppUsers/GetExsistUserSocailID/{socailID}")]
+        public IHttpActionResult GetExsistUserSocailID(string socailID)
+        {
+            try
+            {
+                AppUser userDetails2Client = repo.GetExsistUserSocailID(socailID);
+                return Ok(userDetails2Client);
+>>>>>>> 17c6f29ae26c8b7bb4bfb42b92403ea1a86c75db
             }
             catch (Exception ex)
             {
@@ -126,6 +134,20 @@ namespace CheapListBackEnd.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("api/AppUsers/IsExpoTokenUpdated/{userID}")]
+        public IHttpActionResult IsExpoTokenUpdated(int userID)
+        {
+            try
+            {
+                bool response = repo.IsExpoTokenUpdated(userID);
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return Content(HttpStatusCode.BadRequest, ex);
+            }
+        }
 
         [HttpPost]
         [Route("api/AppUsers/PostUser")]
@@ -142,6 +164,7 @@ namespace CheapListBackEnd.Controllers
             }
         }
 
+<<<<<<< HEAD
         [HttpPost]
         [Route("api/AppUsers/SystemPostUser")]
         public IHttpActionResult SystemPostUser([FromBody] AppUser userBySystem) {
@@ -157,6 +180,8 @@ namespace CheapListBackEnd.Controllers
         }
 
 
+=======
+>>>>>>> 17c6f29ae26c8b7bb4bfb42b92403ea1a86c75db
         // PUT api/<controller>/5
         // col 2 update could be either: UserMail, UserPassword, UserName, User Adress
         //---> need to make a DDL in the client side
@@ -194,6 +219,28 @@ namespace CheapListBackEnd.Controllers
             }
         }
 
+
+        [HttpPost]
+        [Route("api/AppUsers/updateUserExpoToken")]
+        public IHttpActionResult UpdateUserExpoToken([FromBody]AppUser user)
+        {
+            try
+            {
+                int res = repo.UpdateUserExpoToken(user);
+                return res > 0 ? Ok("user's Expo Token Updated in the App DB")
+                :
+                throw new EntryPointNotFoundException
+                ($"there is no user with the provided id ({user.UserID})");
+            }
+            catch (EntryPointNotFoundException ex)
+            {
+                return Content(HttpStatusCode.BadRequest, ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return Content(HttpStatusCode.BadRequest, ex);
+            }
+        }
 
 
         // DELETE api/<controller>/5
