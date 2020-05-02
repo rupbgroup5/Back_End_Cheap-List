@@ -16,13 +16,10 @@ namespace CheapListBackEnd.Models
         public string WayOf_Registration { get; set; }
         public string SocialID { get; set; }
         public string ExpoToken { get; set; }
-<<<<<<< HEAD
         public string PhoneNumber { get; set; }
         public bool IsAdmin { get; set; }
-
-=======
         public int Register_Date_numberRepresntation { get; set; }
->>>>>>> 17c6f29ae26c8b7bb4bfb42b92403ea1a86c75db
+
 
     }
 }

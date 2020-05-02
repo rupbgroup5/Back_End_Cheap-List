@@ -38,7 +38,6 @@ namespace CheapListBackEnd.Repository
 
                     au.UserID = (int)sdr["UserID"];
                     au.UserName = (string)sdr["UserName"];
-<<<<<<< HEAD
                     au.UserPassword = Convert.ToString(sdr["UserPassword"]);
                     au.UserMail = Convert.ToString(sdr["UserMail"]);
                     au.UserAdress = Convert.ToString(sdr["UserAdress"]);
@@ -46,13 +45,7 @@ namespace CheapListBackEnd.Repository
                     au.SocialID = Convert.ToString(sdr["socialID"]);
                     au.ExpoToken = Convert.ToString(sdr["ExpoToken"]);
                     au.PhoneNumber = Convert.ToString(sdr["PhoneNumber"]);
-=======
-                    au.UserPassword = (string)sdr["UserPassword"];
-                    au.UserMail = (string)sdr["UserMail"];
-                    au.UserAdress = (string)sdr["UserAdress"];
-                    au.WayOf_Registration = Convert.ToString(sdr["wayOf_Registration"]);
-                    au.SocialID = Convert.ToString(sdr["socialID"]);
->>>>>>> 17c6f29ae26c8b7bb4bfb42b92403ea1a86c75db
+                  
 
                     allUsers.Add(au);
                 }
@@ -86,7 +79,6 @@ namespace CheapListBackEnd.Repository
                 while (sdr.Read())
                 {
                     au.UserID = (int)sdr["UserID"];
-<<<<<<< HEAD
                     au.UserName = (string)sdr["UserName"];
                     au.UserPassword = Convert.ToString(sdr["UserPassword"]);
                     au.UserMail = Convert.ToString(sdr["UserMail"]);
@@ -95,15 +87,7 @@ namespace CheapListBackEnd.Repository
                     au.SocialID = Convert.ToString(sdr["socialID"]);
                     au.ExpoToken = Convert.ToString(sdr["ExpoToken"]);
                     au.PhoneNumber = Convert.ToString(sdr["PhoneNumber"]);
-=======
-                    au.UserName = Convert.ToString(sdr["UserName"]);
-                    au.UserMail = Convert.ToString(sdr["UserMail"]);
-                    au.UserPassword = Convert.ToString(sdr["UserPassword"]);
-                    au.UserAdress = Convert.ToString(sdr["UserAdress"]);
-                    au.WayOf_Registration = Convert.ToString(sdr["wayOf_Registration"]);
-                    au.SocialID = Convert.ToString(sdr["socialID"]);
 
->>>>>>> 17c6f29ae26c8b7bb4bfb42b92403ea1a86c75db
                 }
                 return au;
             }
@@ -167,7 +151,7 @@ namespace CheapListBackEnd.Repository
                 EnableSsl = true,
                 DeliveryMethod = SmtpDeliveryMethod.Network,
                 UseDefaultCredentials = false,
-            Credentials = new NetworkCredential("rupbgroup5@gmail.com", password)
+                Credentials = new NetworkCredential("rupbgroup5@gmail.com", password)
             };
 
             using (var mailMessage = new MailMessage("rupbgroup5@gmail.com", toAddress)
@@ -269,17 +253,12 @@ namespace CheapListBackEnd.Repository
             {
 
                 string query = "SET QUOTED_IDENTIFIER OFF\r\n"; // if there is an ' so it wont ruined the insertition
-<<<<<<< HEAD
+
                 query += "insert  into AppUser (UserName, UserMail, UserPassword, wayOf_Registration, socialID, ExpoToken, PhoneNumber)\r\n";
                 query += $"VALUES (\"{newUser.UserName}\", \"{newUser.UserMail}\", \"{newUser.UserPassword}\", \"{newUser.WayOf_Registration}\", \"{newUser.SocialID}\",";
-                query += $"\"{newUser.ExpoToken}\",\"{newUser.PhoneNumber}\"); "; 
-=======
-                query += "insert  into AppUser (UserName, UserMail, UserPassword, wayOf_Registration, socialID)\r\n";
-                query += $"VALUES (\"{newUser.UserName}\", \"{newUser.UserMail}\", \"{newUser.UserPassword}\", \"{newUser.WayOf_Registration}\", \"{newUser.SocialID}\");";
->>>>>>> 17c6f29ae26c8b7bb4bfb42b92403ea1a86c75db
+                query += $"\"{newUser.ExpoToken}\",\"{newUser.PhoneNumber}\"); ";
                 query += "declare @userID2Associate int;";
                 query += "set @userID2Associate = Scope_identity()";
-
                 query += "insert into Contacts (ContactName, ContactPhoneNumber, AppUserID) VALUES";
                 foreach (var contact in newUser.Contacts)
                 {
@@ -430,7 +409,7 @@ namespace CheapListBackEnd.Repository
                         if (temp.Contains('-'))
                         {
                             temp2 = temp.Replace("-", "");
-                            
+
 
                         }
 
@@ -504,39 +483,20 @@ namespace CheapListBackEnd.Repository
 
         }
 
-<<<<<<< HEAD
-        public AppUser AuthenticateContact(string phoneNumber)
-        {
-=======
         public AppUser GetExsistUserSocailID(string socailID)
         {
             AppUser au;
->>>>>>> 17c6f29ae26c8b7bb4bfb42b92403ea1a86c75db
+
             try
             {
                 con = connect(false);
 
-<<<<<<< HEAD
-                string query = $"exec dbo.spAppUser_GetUserByPhoneNumber @PhoneNumber = '{phoneNumber}'";
-=======
                 string query = $"exec sp_AppUser_GetUserBySocialID @ProvidedSocialID = '{socailID}'";
->>>>>>> 17c6f29ae26c8b7bb4bfb42b92403ea1a86c75db
 
                 cmd = new SqlCommand(query, con);
 
                 sdr = cmd.ExecuteReader();
 
-<<<<<<< HEAD
-                AppUser au = new AppUser();
-
-                while (sdr.Read())
-                {
-                    au.UserID = (int)sdr["UserID"];
-                    au.UserName = (string)sdr["UserName"];
-                    au.UserMail = Convert.ToString(sdr["UserMail"]);
-                    au.ExpoToken = Convert.ToString(sdr["ExpoToken"]);
-                    au.PhoneNumber = Convert.ToString(sdr["PhoneNumber"]);
-=======
                 if (sdr.Read())
                 {
                     au = new AppUser()
@@ -549,13 +509,11 @@ namespace CheapListBackEnd.Repository
                         UserAdress = Convert.ToString(sdr["UserAdress"]),
                         WayOf_Registration = Convert.ToString(sdr["wayOf_Registration"]),
                         SocialID = Convert.ToString(sdr["socialID"])
-
                     };
                 }
                 else
                 {
                     au = new AppUser(); //EMPTY OBJECT....
->>>>>>> 17c6f29ae26c8b7bb4bfb42b92403ea1a86c75db
                 }
                 return au;
             }
@@ -569,9 +527,6 @@ namespace CheapListBackEnd.Repository
             }
         }
 
-<<<<<<< HEAD
-      
-=======
         public int UpdateUserExpoToken(AppUser user)
         {
             try
@@ -614,7 +569,7 @@ namespace CheapListBackEnd.Repository
 
                 if (sdr.Read())
                 {
-                    au = new AppUser(){Register_Date_numberRepresntation = (int)sdr["Register_Date_numberRepresntation"]};
+                    au = new AppUser() { Register_Date_numberRepresntation = (int)sdr["Register_Date_numberRepresntation"] };
                 }
                 else
                 {
@@ -632,6 +587,46 @@ namespace CheapListBackEnd.Repository
                 con.Close();
             }
         }
->>>>>>> 17c6f29ae26c8b7bb4bfb42b92403ea1a86c75db
+
+        public AppUser AuthenticateContact(string phoneNumber)
+        {
+
+            string query = $"exec dbo.spAppUser_GetUserByPhoneNumber @PhoneNumber = '{phoneNumber}'";
+
+            try
+            {
+                con = connect(false);
+
+                cmd = new SqlCommand(query, con);
+
+                sdr = cmd.ExecuteReader();
+                AppUser au = new AppUser();
+
+                while (sdr.Read())
+                {
+                    au.UserID = (int)sdr["UserID"];
+                    au.UserName = (string)sdr["UserName"];
+                    au.UserMail = Convert.ToString(sdr["UserMail"]);
+                    au.ExpoToken = Convert.ToString(sdr["ExpoToken"]);
+                    au.PhoneNumber = Convert.ToString(sdr["PhoneNumber"]);
+                }
+                return au;
+            }
+            catch (Exception exp)
+            {
+                throw (exp);
+            }
+            finally
+            {
+                con.Close();
+            }
+
+
+        }
+
+
+
     }
+  
 }
+

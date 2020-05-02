@@ -19,17 +19,12 @@ namespace CheapListBackEnd.RepositoryInterfaces
         AppUser AuthenticateUserLogin(string userName, string password);
         void UpdateUserContactsList(AppUser user);
         List<Contact> GetUserContacts(int userID);
-<<<<<<< HEAD
         AppUser AuthenticateContact(string phoneNumber);
         int PostSystemAppUser(AppUser userBySystem);
-
-        
-
-=======
         AppUser GetExsistUserSocailID(string socailID);
         int UpdateUserExpoToken(AppUser user);
         bool IsExpoTokenUpdated(int userID);
->>>>>>> 17c6f29ae26c8b7bb4bfb42b92403ea1a86c75db
+
 
     }
 }

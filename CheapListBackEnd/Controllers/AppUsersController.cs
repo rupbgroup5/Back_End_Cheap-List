@@ -109,16 +109,8 @@ namespace CheapListBackEnd.Controllers
 
         }
 
+
         [HttpGet]
-<<<<<<< HEAD
-        [Route("api/AppUsers/AuthenticateContact/{phoneNumber}")]
-        public IHttpActionResult AuthenticateContact(string phoneNumber) {
-            try
-            {
-                AppUser appUser = repo.AuthenticateContact(phoneNumber);
-                return Ok(appUser);
-                
-=======
         [Route("api/AppUsers/GetExsistUserSocailID/{socailID}")]
         public IHttpActionResult GetExsistUserSocailID(string socailID)
         {
@@ -126,7 +118,20 @@ namespace CheapListBackEnd.Controllers
             {
                 AppUser userDetails2Client = repo.GetExsistUserSocailID(socailID);
                 return Ok(userDetails2Client);
->>>>>>> 17c6f29ae26c8b7bb4bfb42b92403ea1a86c75db
+            }
+            catch (Exception ex)
+            {
+                return Content(HttpStatusCode.BadRequest, ex);
+            }
+        }
+
+        [HttpGet]
+        [Route("api/AppUsers/AuthenticateContact/{phoneNumber}")]
+        public IHttpActionResult AuthenticateContact(string phoneNumber) {
+            try
+            {
+                AppUser appUser = repo.AuthenticateContact(phoneNumber);
+                return Ok(appUser);
             }
             catch (Exception ex)
             {
@@ -164,13 +169,12 @@ namespace CheapListBackEnd.Controllers
             }
         }
 
-<<<<<<< HEAD
         [HttpPost]
         [Route("api/AppUsers/SystemPostUser")]
         public IHttpActionResult SystemPostUser([FromBody] AppUser userBySystem) {
             try
             {
-                 repo.PostSystemAppUser(userBySystem);
+                repo.PostSystemAppUser(userBySystem);
                 return Ok(userBySystem);
             }
             catch (Exception ex)
@@ -178,11 +182,9 @@ namespace CheapListBackEnd.Controllers
                 return Content(HttpStatusCode.BadRequest, ex);
             }
         }
-
-
-=======
->>>>>>> 17c6f29ae26c8b7bb4bfb42b92403ea1a86c75db
-        // PUT api/<controller>/5
+            
+            
+            // PUT api/<controller>/5
         // col 2 update could be either: UserMail, UserPassword, UserName, User Adress
         //---> need to make a DDL in the client side
         public IHttpActionResult Put([FromBody]UpdateAppUser user2update)
