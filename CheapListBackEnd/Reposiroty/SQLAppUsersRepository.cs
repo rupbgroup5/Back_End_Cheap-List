@@ -296,7 +296,7 @@ namespace CheapListBackEnd.Repository
                             formatContact = '0' + formatContact;
                         }
 
-                        query += $" (\"{replaceTheName}\",\"{formatContact}\", @userID2Associate),  ";
+                        query += $" (\"{replaceTheName}\",\"{formatContact}\", @userID2Associate),";
                     }
 
                 }
@@ -409,8 +409,6 @@ namespace CheapListBackEnd.Repository
                         if (temp.Contains('-'))
                         {
                             temp2 = temp.Replace("-", "");
-
-
                         }
 
                         string formatContact = temp2;
@@ -425,11 +423,8 @@ namespace CheapListBackEnd.Repository
                             formatContact = temp2.Remove(0, 3);
                             formatContact = '0' + formatContact;
                         }
-
                         query += $" (\"{replaceTheName}\",\"{formatContact}\", {user.UserID}),";
                     }
-
-
                 }
                 query = query.Substring(0, query.Length - 1);
 
@@ -575,7 +570,6 @@ namespace CheapListBackEnd.Repository
                     throw new EntryPointNotFoundException($"there is no such user with the provided ID: {userID}");
                 }
 
-
                 string[] lastRegisterSplitedDate = au.DateOfLast_Register.Split('/');
 
                 int regDay = int.Parse(lastRegisterSplitedDate[0]);
@@ -589,11 +583,20 @@ namespace CheapListBackEnd.Repository
                 int monthOfToday = int.Parse(splitedToday[1]);
                 int yearOfToday = int.Parse(splitedToday[2]);
 
+                bool onProduction = true; //manual maintence 
+                if (onProduction)
+                {
+                    return (
+                    regDay == monthOfToday &&
+                    regMonth == dayOfToday && // !!! this is not a mistake! the stupid remote pc save date as format: mm/dd/yyyy
+                    regYear == yearOfToday
+                    ); // = allready registered today..
+                }
                 return (
-                            regDay == dayOfToday &&
-                            regMonth == monthOfToday &&
-                            regYear == yearOfToday
-                    ); // = allready registered today...
+                        regDay == dayOfToday &&
+                        regMonth == monthOfToday &&
+                        regYear == yearOfToday
+                        ); // = allready registered today...
             }
             catch (Exception exp)
             {
