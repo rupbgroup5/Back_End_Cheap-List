@@ -45,7 +45,7 @@ namespace CheapListBackEnd.Repository
                     au.SocialID = Convert.ToString(sdr["socialID"]);
                     au.ExpoToken = Convert.ToString(sdr["ExpoToken"]);
                     au.PhoneNumber = Convert.ToString(sdr["PhoneNumber"]);
-                  
+
 
                     allUsers.Add(au);
                 }
@@ -627,6 +627,5 @@ namespace CheapListBackEnd.Repository
 
 
     }
-  
-}
 
+}
