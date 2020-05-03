@@ -45,7 +45,7 @@ namespace CheapListBackEnd.Repository
                     au.SocialID = Convert.ToString(sdr["socialID"]);
                     au.ExpoToken = Convert.ToString(sdr["ExpoToken"]);
                     au.PhoneNumber = Convert.ToString(sdr["PhoneNumber"]);
-                  
+
 
                     allUsers.Add(au);
                 }
@@ -534,7 +534,7 @@ namespace CheapListBackEnd.Repository
                 con = connect(false); // true?
 
                 string query = $"exec spAppUser_UpdateUserExpoToken @NewToken='{user.ExpoToken}', " +
-                    $"@userID={user.UserID}, @intStempOfToday={user.DateOfLast_Register}";
+                    $"@userID={user.UserID}, @DateStempOfToday='{user.DateOfLast_Register}'";
 
                 cmd = new SqlCommand(query, con);
 
@@ -579,17 +579,21 @@ namespace CheapListBackEnd.Repository
                 string[] lastRegisterSplitedDate = au.DateOfLast_Register.Split('/');
 
                 int regDay = int.Parse(lastRegisterSplitedDate[0]);
-                //int regMonth = int.Parse(lastRegisterSplitedDate[1]);
-                //int regYear = int.Parse(lastRegisterSplitedDate[2]);
+                int regMonth = int.Parse(lastRegisterSplitedDate[1]);
+                int regYear = int.Parse(lastRegisterSplitedDate[2]);
 
                 string today = DateTime.Today.ToShortDateString();
                 string[] splitedToday = today.Split('/');
 
                 int dayOfToday = int.Parse(splitedToday[0]);
-                //int monthOfToday = int.Parse(splitedToday[1]);
-                //int yearOfToday = int.Parse(splitedToday[2]);
+                int monthOfToday = int.Parse(splitedToday[1]);
+                int yearOfToday = int.Parse(splitedToday[2]);
 
-                return regDay == dayOfToday; // = allready registered today...
+                return (
+                            regDay == dayOfToday &&
+                            regMonth == monthOfToday &&
+                            regYear == yearOfToday
+                    ); // = allready registered today...
             }
             catch (Exception exp)
             {
@@ -638,8 +642,8 @@ namespace CheapListBackEnd.Repository
         }
 
 
-          
+
     }
-  
+
 }
 
