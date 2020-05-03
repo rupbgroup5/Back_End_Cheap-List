@@ -51,6 +51,7 @@ namespace CheapListBackEnd.Reposiroty
 
             SqlConnection con = null;
             List<AppGroup> groupList = new List<AppGroup>();
+            
             try
             {
                 con = connect(false);
@@ -59,20 +60,22 @@ namespace CheapListBackEnd.Reposiroty
             SqlCommand cmd = new SqlCommand(query, con);
 
                 SqlDataReader sdr = cmd.ExecuteReader();
-
+                
                 while (sdr.Read())
                 {
                     AppGroup ag = new AppGroup();
                     ag.GroupID = (int)sdr["groupID"];
                     ag.GroupName = Convert.ToString(sdr["groupName"]);
                     ag.GroupImg = Convert.ToString(sdr["groupImg"]);
+                    ag.UserID = id;
+                    ag.UserName = (string)(sdr["userName"]);
                     groupList.Add(ag);
                 }
 
                 
 
                 foreach (var group in groupList)
-                {
+                { 
                     con.Close();
                     con = connect(false);
                     query = $"exec dbo.spUserInGroup_GetMembersByGroupID @groupID = {group.GroupID}";
@@ -112,14 +115,14 @@ namespace CheapListBackEnd.Reposiroty
                              $"insert into AppGroup (groupName) values('{appGroup.GroupName}')" +
                              "select @LastGroupID = SCOPE_IDENTITY();" +
                              "insert into UserInGroup (userID, groupID, isAdmin) values " +
-                             $"({appGroup.UserID},@LastGroupID,1),";
+                             $"({appGroup.UserID},@LastGroupID,1)";
 
                 foreach (var user in appGroup.Participiants)
                 {
-                    str += $"({user.UserID},@LastGroupID,0),";
+                    str += $",({user.UserID},@LastGroupID,0)";
 
                 }
-                str = str.Substring(0, str.Length - 1);
+                //str = str.Substring(0, str.Length - 1);
                 str += "select @LastGroupID as GroupID";
 
 
