@@ -18,7 +18,7 @@ namespace CheapListBackEnd.Models
         public string ExpoToken { get; set; }
         public string PhoneNumber { get; set; }
         public bool IsAdmin { get; set; }
-        public int Register_Date_numberRepresntation { get; set; }
+        public string DateOfLast_Register { get; set; }
 
 
     }
