@@ -127,7 +127,8 @@ namespace CheapListBackEnd.Controllers
 
         [HttpGet]
         [Route("api/AppUsers/AuthenticateContact/{phoneNumber}")]
-        public IHttpActionResult AuthenticateContact(string phoneNumber) {
+        public IHttpActionResult AuthenticateContact(string phoneNumber)
+        {
             try
             {
                 AppUser appUser = repo.AuthenticateContact(phoneNumber);
@@ -155,12 +156,34 @@ namespace CheapListBackEnd.Controllers
         }
 
         [HttpPost]
+        [Route("api/AppUsers/updateUserExpoToken")]
+        public IHttpActionResult UpdateUserExpoToken([FromBody]AppUser user)
+        {
+            try
+            {
+                int res = repo.UpdateUserExpoToken(user);
+                return res > 0 ? Ok("user's Expo Token Updated in the App DB")
+                :
+                throw new EntryPointNotFoundException
+                ($"there is no user with the provided id ({user.UserID})");
+            }
+            catch (EntryPointNotFoundException ex)
+            {
+                return Content(HttpStatusCode.BadRequest, ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return Content(HttpStatusCode.BadRequest, ex);
+            }
+        }
+        
+        [HttpPost]
         [Route("api/AppUsers/PostUser")]
         public IHttpActionResult Post([FromBody]AppUser newUser)
         {
             try
             {
-               int newUserID =  repo.PostAppUser(newUser);
+                int newUserID = repo.PostAppUser(newUser);
                 return Ok(newUserID);
             }
             catch (Exception ex)
@@ -171,7 +194,8 @@ namespace CheapListBackEnd.Controllers
 
         [HttpPost]
         [Route("api/AppUsers/SystemPostUser")]
-        public IHttpActionResult SystemPostUser([FromBody] AppUser userBySystem) {
+        public IHttpActionResult SystemPostUser([FromBody] AppUser userBySystem)
+        {
             try
             {
                 repo.PostSystemAppUser(userBySystem);
@@ -182,9 +206,9 @@ namespace CheapListBackEnd.Controllers
                 return Content(HttpStatusCode.BadRequest, ex);
             }
         }
-            
-            
-            // PUT api/<controller>/5
+
+
+        // PUT api/<controller>/5
         // col 2 update could be either: UserMail, UserPassword, UserName, User Adress
         //---> need to make a DDL in the client side
         public IHttpActionResult Put([FromBody]UpdateAppUser user2update)
@@ -220,30 +244,6 @@ namespace CheapListBackEnd.Controllers
                 return Content(HttpStatusCode.BadRequest, ex);
             }
         }
-
-
-        [HttpPost]
-        [Route("api/AppUsers/updateUserExpoToken")]
-        public IHttpActionResult UpdateUserExpoToken([FromBody]AppUser user)
-        {
-            try
-            {
-                int res = repo.UpdateUserExpoToken(user);
-                return res > 0 ? Ok("user's Expo Token Updated in the App DB")
-                :
-                throw new EntryPointNotFoundException
-                ($"there is no user with the provided id ({user.UserID})");
-            }
-            catch (EntryPointNotFoundException ex)
-            {
-                return Content(HttpStatusCode.BadRequest, ex.Message);
-            }
-            catch (Exception ex)
-            {
-                return Content(HttpStatusCode.BadRequest, ex);
-            }
-        }
-
 
         // DELETE api/<controller>/5
         public IHttpActionResult Delete(int id)

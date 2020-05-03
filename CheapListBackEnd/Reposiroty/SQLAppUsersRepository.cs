@@ -534,7 +534,7 @@ namespace CheapListBackEnd.Repository
                 con = connect(false); // true?
 
                 string query = $"exec spAppUser_UpdateUserExpoToken @NewToken='{user.ExpoToken}', " +
-                    $"@userID={user.UserID}, @intStempOfToday={user.Register_Date_numberRepresntation}";
+                    $"@userID={user.UserID}, @DateStempOfToday='{user.DateOfLast_Register}'";
 
                 cmd = new SqlCommand(query, con);
 
@@ -556,12 +556,11 @@ namespace CheapListBackEnd.Repository
         public bool IsExpoTokenUpdated(int userID)
         {
             AppUser au;
-            bool returnValue = false;
             try
             {
                 con = connect(false);
 
-                string query = $"";
+                string query = $"exec spAppUser_GetDateOf_LastRegistration @appUserID={userID}";
 
                 cmd = new SqlCommand(query, con);
 
@@ -569,14 +568,32 @@ namespace CheapListBackEnd.Repository
 
                 if (sdr.Read())
                 {
-                    au = new AppUser() { Register_Date_numberRepresntation = (int)sdr["Register_Date_numberRepresntation"] };
+                    au = new AppUser() { DateOfLast_Register = (string)sdr["DateOfLast_Register"] };
                 }
                 else
                 {
                     throw new EntryPointNotFoundException($"there is no such user with the provided ID: {userID}");
                 }
 
-                return returnValue;
+
+                string[] lastRegisterSplitedDate = au.DateOfLast_Register.Split('/');
+
+                int regDay = int.Parse(lastRegisterSplitedDate[0]);
+                int regMonth = int.Parse(lastRegisterSplitedDate[1]);
+                int regYear = int.Parse(lastRegisterSplitedDate[2]);
+
+                string today = DateTime.Today.ToShortDateString();
+                string[] splitedToday = today.Split('/');
+
+                int dayOfToday = int.Parse(splitedToday[0]);
+                int monthOfToday = int.Parse(splitedToday[1]);
+                int yearOfToday = int.Parse(splitedToday[2]);
+
+                return (
+                            regDay == dayOfToday &&
+                            regMonth == monthOfToday &&
+                            regYear == yearOfToday
+                    ); // = allready registered today...
             }
             catch (Exception exp)
             {
@@ -629,3 +646,4 @@ namespace CheapListBackEnd.Repository
     }
 
 }
+
