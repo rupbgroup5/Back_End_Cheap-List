@@ -528,8 +528,7 @@ namespace CheapListBackEnd.Repository
             {
                 con = connect(false); // true?
 
-                string query = $"exec spAppUser_UpdateUserExpoToken @NewToken='{user.ExpoToken}', " +
-                    $"@userID={user.UserID}, @DateStempOfToday='{user.DateOfLast_Register}'";
+                string query = $"exec spAppUser_UpdateUserExpoToken @NewToken='{user.UserID}',@userID = {user.UserID}";
 
                 cmd = new SqlCommand(query, con);
 
