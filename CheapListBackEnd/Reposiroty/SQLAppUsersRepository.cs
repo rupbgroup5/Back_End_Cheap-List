@@ -120,10 +120,15 @@ namespace CheapListBackEnd.Repository
                     au.UserMail = (string)sdr["userMail"];
                     au.UserPassword = Convert.ToString(sdr["UserPassword"]);
                 }
+                else
+                {
+                    return $" {au.UserMail} המייל המצויין אינו מזוהה במערכת שלנו";
+                    // so there is no mail associated with the id providded and I want to handle it on the front end
+                }
                 try
                 {
                     SendMail(au.UserMail, au.UserPassword);
-                    return $"the password sent to the user mail: {au.UserMail}";
+                    return $" {au.UserMail} סיסמתך נשלחה למייל";
                 }
                 catch (Exception exp)
                 {
