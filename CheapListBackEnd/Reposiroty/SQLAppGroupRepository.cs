@@ -58,6 +58,7 @@ namespace CheapListBackEnd.Reposiroty
                 string query = $" exec dbo.spAppGroup_GetGroupByUserID @UserID = {id}";
 
             SqlCommand cmd = new SqlCommand(query, con);
+                cmd.CommandTimeout = 30;
 
                 SqlDataReader sdr = cmd.ExecuteReader();
                 
@@ -68,11 +69,9 @@ namespace CheapListBackEnd.Reposiroty
                     ag.GroupName = Convert.ToString(sdr["groupName"]);
                     ag.GroupImg = Convert.ToString(sdr["groupImg"]);
                     ag.UserID = id;
-                    ag.UserName = (string)(sdr["userName"]);
+                    ag.UserName = (string)sdr["userName"];
                     groupList.Add(ag);
                 }
-
-                
 
                 foreach (var group in groupList)
                 { 
@@ -107,6 +106,7 @@ namespace CheapListBackEnd.Reposiroty
         {
             SqlConnection con = null;
             SqlCommand cmd;
+            
 
             try
             {
