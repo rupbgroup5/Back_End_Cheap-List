@@ -34,7 +34,7 @@ namespace CheapListBackEnd.Reposiroty
                     ap.product_barcode = (string)sdr["product_barcode"];
                     ap.product_name = (string)sdr["product_name"];
                     ap.product_description = Convert.ToString(sdr["product_description"]);
-                    ap.product_image = Convert.ToString(sdr["product_image"]);
+                    ap.product_image = Convert.ToString(sdr["product_image"]); ;
                     ap.manufacturer_name = Convert.ToString(sdr["manufacturer_name"]);
                     ap.estimatedProductPrice = Convert.ToDouble(sdr["estimatedProductPrice"]);
                     ap.store_id = Convert.ToInt32(sdr["store_id"]);
