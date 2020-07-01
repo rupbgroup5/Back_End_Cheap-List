@@ -29,8 +29,8 @@ namespace CheapListBackEnd.Reposiroty
                 SqlDataReader sdr = cmd.ExecuteReader();
 
                 while (sdr.Read())
-               {
-                    AppProduct ap = new AppProduct ();
+                {
+                    AppProduct ap = new AppProduct();
                     ap.product_barcode = (string)sdr["product_barcode"];
                     ap.product_name = (string)sdr["product_name"];
                     ap.product_description = Convert.ToString(sdr["product_description"]);
@@ -86,7 +86,7 @@ namespace CheapListBackEnd.Reposiroty
                 }
             }
         }
-        public int DeleteProduct(string barcode,int listID)
+        public int DeleteProduct(string barcode, int listID)
         {
             SqlConnection con = null;
             SqlCommand cmd;
@@ -114,6 +114,80 @@ namespace CheapListBackEnd.Reposiroty
                 {
                     con.Close();
                 }
+            }
+        }
+
+        public int PostCities(List<Cities> cities)
+        {
+            SqlConnection con = null;
+            SqlCommand cmd;
+            try
+            {
+                con = connect(false);
+              
+
+                foreach (var city in cities)  
+                {
+                    string str = " SET QUOTED_IDENTIFIER OFF INSERT INTO cities (cityID, cityName) values ";
+                    string replaceTheName = "";
+                    if (city.cityName.Contains('"'))
+                    {
+                        replaceTheName = city.cityName.Replace('"', '`');
+                    }
+                    else replaceTheName = city.cityName;
+                    str += $"({city.cityID}, \"{replaceTheName}\"); ";
+                    cmd = new SqlCommand(str, con);
+                    cmd.ExecuteNonQuery();
+                }
+
+                return 1;
+            }
+            catch (Exception ex)
+            {
+                return 0;
+                throw (ex);
+
+            }
+            finally
+            {
+                if (con != null)
+                {
+                    con.Close();
+                }
+            }
+        }
+
+        public IEnumerable<Cities> GetCities()
+        {
+            List<Cities> DataCities = new List<Cities>();
+            SqlConnection con = null;
+
+            try
+            {
+                con = connect(false);
+
+                string query = "select * from cities";
+
+                SqlCommand cmd = new SqlCommand(query, con);
+
+                SqlDataReader sdr = cmd.ExecuteReader();
+
+                while (sdr.Read())
+                {
+                    Cities c = new Cities();
+                    c.cityID = (int)sdr["cityID"];
+                    c.cityName = (string)sdr["cityName"];
+                    DataCities.Add(c);
+                }
+                return DataCities;
+            }
+            catch (Exception exp)
+            {
+                throw (exp);
+            }
+            finally
+            {
+                con.Close();
             }
         }
     }

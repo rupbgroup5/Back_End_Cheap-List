@@ -188,6 +188,7 @@
     <Compile Include="Models\AppGroup.cs" />
     <Compile Include="Models\AppList.cs" />
     <Compile Include="Models\AppProduct.cs" />
+    <Compile Include="Models\Cities.cs" />
     <Compile Include="Models\Contact.cs" />
     <Compile Include="Models\UpdateAppUser.cs" />
     <Compile Include="Global.asax.cs">
