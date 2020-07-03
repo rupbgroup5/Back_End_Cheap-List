@@ -17,7 +17,6 @@ namespace CheapListBackEnd.Controllers
         public AppUsersController(IAppUsersRepository ir) => repo = ir; // Unity config use this constractur automatically 
 
         // GET api/<controller>
-        //test push
         [HttpGet]
         [Route("api/AppUsers/GetUsers")]
         public IHttpActionResult Get()
@@ -212,6 +211,7 @@ namespace CheapListBackEnd.Controllers
         // PUT api/<controller>/5
         // col 2 update could be either: UserMail, UserPassword, UserName, User Adress
         //---> need to make a DDL in the client side
+        //NOT HANDLED YET
         public IHttpActionResult Put([FromBody]UpdateAppUser user2update)
         {
             try
@@ -245,6 +245,29 @@ namespace CheapListBackEnd.Controllers
                 return Content(HttpStatusCode.BadRequest, ex);
             }
         }
+
+        [HttpPost]
+        [Route("api/AppUsers/UpdateUserCoords")]
+        public IHttpActionResult UpdateUserCoords([FromBody]AppUser user)
+        {
+
+            try
+            {
+                int res = repo.UpdateUserCoords(user);
+                return res > 0 ? Ok($"we have updated coords for user id: {user.UserID} in the app database") :
+                throw new EntryPointNotFoundException($"there is no user with the provided id ({user.UserID})");
+            }
+            catch (EntryPointNotFoundException ex)
+            {
+                return Content(HttpStatusCode.BadRequest, ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return Content(HttpStatusCode.BadRequest, ex);
+            }
+        }
+
+
 
         // DELETE api/<controller>/5
         public IHttpActionResult Delete(int id)

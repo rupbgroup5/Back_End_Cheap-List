@@ -19,7 +19,7 @@ namespace CheapListBackEnd.Models
         public string PhoneNumber { get; set; }
         public bool IsAdmin { get; set; }
         public string DateOfLast_Register { get; set; }
-
-
+        public string Latitude { get; set; }
+        public string Longitude { get; set; }
     }
 }

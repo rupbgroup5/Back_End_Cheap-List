@@ -146,7 +146,7 @@ namespace CheapListBackEnd.Repository
             }
         }
 
-        public static void SendMail(string toAddress, string userPassword)
+        private static void SendMail(string toAddress, string userPassword)
         {
             string password = WebConfigurationManager.AppSettings["SecurePassword"];
             var smtp = new SmtpClient
@@ -648,8 +648,29 @@ namespace CheapListBackEnd.Repository
 
         }
 
+        public int UpdateUserCoords(AppUser user)
+        {
+            try
+            {
+                con = connect(false); // true?
 
+                string query = $"exec spAppUser_UpdateUserCoords @ID={user.UserID}, @long = '{user.Longitude}', @lat = '{user.Latitude}'";
 
+                cmd = new SqlCommand(query, con);
+
+                int res = cmd.ExecuteNonQuery();
+                return res;
+
+            }
+            catch (Exception exp)
+            {
+                throw (exp);
+            }
+            finally
+            {
+                con.Close();
+            }
+        }
     }
 
 }

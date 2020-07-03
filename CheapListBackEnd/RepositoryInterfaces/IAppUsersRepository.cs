@@ -23,6 +23,7 @@ namespace CheapListBackEnd.RepositoryInterfaces
         int PostSystemAppUser(AppUser userBySystem);
         AppUser GetExsistUserSocailID(string socailID);
         int UpdateUserExpoToken(AppUser user);
+        int UpdateUserCoords(AppUser user);
         bool IsExpoTokenUpdated(int userID);
 
 
