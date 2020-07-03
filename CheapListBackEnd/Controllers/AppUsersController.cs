@@ -17,6 +17,7 @@ namespace CheapListBackEnd.Controllers
         public AppUsersController(IAppUsersRepository ir) => repo = ir; // Unity config use this constractur automatically 
 
         // GET api/<controller>
+        //test push
         [HttpGet]
         [Route("api/AppUsers/GetUsers")]
         public IHttpActionResult Get()
