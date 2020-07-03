@@ -3,6 +3,9 @@
 
 ## dont want the web config to be publish
 Web.config
+Web.Debug.config
+Web.Release.config
+
 
 # User-specific files
 *.suo
