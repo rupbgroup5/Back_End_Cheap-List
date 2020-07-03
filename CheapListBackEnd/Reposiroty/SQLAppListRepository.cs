@@ -31,9 +31,7 @@ namespace CheapListBackEnd.Reposiroty
                     al.ListID = (int)sdr["listID"];
                     al.GroupID = (int)sdr["groupID"];
                     al.ListName = Convert.ToString(sdr["listName"]);
-                    al.ListTotalPrice = Convert.ToDouble(sdr["listTotalPrice"]);
                     al.ListEstimatedPrice = Convert.ToDouble(sdr["listEstimatedPrice"]);
-                    al.ListDescription = Convert.ToString(sdr["listDescription"]);
                     al.CityName = Convert.ToString(sdr["cityName"]);
                     if (al.CityName == null)
                     {
@@ -78,12 +76,10 @@ namespace CheapListBackEnd.Reposiroty
                     al.GroupID = (int)sdr["groupID"];
                     al.ListName = Convert.ToString(sdr["listName"]);
                     al.ListEstimatedPrice = Convert.ToDouble(sdr["listEstimatedPrice"]);
-                    al.ListTotalPrice = (int)sdr["listTotalPrice"];
-                    al.ListDescription = Convert.ToString(sdr["listDescription"]);
                     al.CityName = Convert.ToString(sdr["cityName"]);
                     if (al.CityName == null)
                     {
-                        al.CityName = "עדיין לא הוגדר עיר לחיפוש";
+                        al.CityName = "הזן עיר לחיפוש";
                     }
                     al.LimitPrice = (int)sdr["limitPrice"];
                 }
