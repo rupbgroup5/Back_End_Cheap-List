@@ -37,7 +37,6 @@ namespace CheapListBackEnd.Reposiroty
                     ap.product_image = Convert.ToString(sdr["product_image"]); ;
                     ap.manufacturer_name = Convert.ToString(sdr["manufacturer_name"]);
                     ap.estimatedProductPrice = Convert.ToDouble(sdr["estimatedProductPrice"]);
-                    ap.store_id = Convert.ToInt32(sdr["store_id"]);
                     ap.ListID = (int)sdr["listID"];
                     productCart.Add(ap);
                 }
@@ -62,7 +61,7 @@ namespace CheapListBackEnd.Reposiroty
                 con = connect(false);
                 string str = "SET QUOTED_IDENTIFIER OFF" +
                               " insert into AppProduct (product_barcode, product_name, product_description, product_image, manufacturer_name, store_id,estimatedProductPrice) " +
-                             $"values(\'{appProduct.product_barcode}\',\'{appProduct.product_name}\',\'{appProduct.product_description}\',\'{appProduct.product_image}\',\'{appProduct.manufacturer_name}\',{appProduct.store_id},{appProduct.estimatedProductPrice});" +
+                             $"values(\'{appProduct.product_barcode}\',\'{appProduct.product_name}\',\'{appProduct.product_description}\',\'{appProduct.product_image}\',\'{appProduct.manufacturer_name}\',{appProduct.estimatedProductPrice});" +
                              $"insert into ProductInList(product_barcode,listID,groupID) values (\'{appProduct.product_barcode}\',{appProduct.ListID},{appProduct.GroupId});" +
                              "UPDATE AppList SET listEstimatedPrice = (" +
                              "select sum(A.estimatedProductPrice) from AppProduct A inner join " +
@@ -117,78 +116,5 @@ namespace CheapListBackEnd.Reposiroty
             }
         }
 
-        public int PostCities(List<Cities> cities)
-        {
-            SqlConnection con = null;
-            SqlCommand cmd;
-            try
-            {
-                con = connect(false);
-              
-
-                foreach (var city in cities)  
-                {
-                    string str = " SET QUOTED_IDENTIFIER OFF INSERT INTO cities (cityID, cityName) values ";
-                    string replaceTheName = "";
-                    if (city.cityName.Contains('"'))
-                    {
-                        replaceTheName = city.cityName.Replace('"', '`');
-                    }
-                    else replaceTheName = city.cityName;
-                    str += $"({city.cityID}, \"{replaceTheName}\"); ";
-                    cmd = new SqlCommand(str, con);
-                    cmd.ExecuteNonQuery();
-                }
-
-                return 1;
-            }
-            catch (Exception ex)
-            {
-                return 0;
-                throw (ex);
-
-            }
-            finally
-            {
-                if (con != null)
-                {
-                    con.Close();
-                }
-            }
-        }
-
-        public IEnumerable<Cities> GetCities()
-        {
-            List<Cities> DataCities = new List<Cities>();
-            SqlConnection con = null;
-
-            try
-            {
-                con = connect(false);
-
-                string query = "select * from cities";
-
-                SqlCommand cmd = new SqlCommand(query, con);
-
-                SqlDataReader sdr = cmd.ExecuteReader();
-
-                while (sdr.Read())
-                {
-                    Cities c = new Cities();
-                    c.cityID = (int)sdr["cityID"];
-                    c.cityName = (string)sdr["cityName"];
-                    DataCities.Add(c);
-                }
-                return DataCities;
-            }
-            catch (Exception exp)
-            {
-                throw (exp);
-            }
-            finally
-            {
-                con.Close();
-            }
-        }
     }
 }

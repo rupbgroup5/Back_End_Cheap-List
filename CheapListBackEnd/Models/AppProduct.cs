@@ -13,7 +13,6 @@ namespace CheapListBackEnd.Models
         public string product_image { get; set; }
         public string manufacturer_name { get; set; }
         public double estimatedProductPrice { get; set; }
-        public int store_id { get; set; }
 
         //for ProductInList
         public int ListID { get; set; }

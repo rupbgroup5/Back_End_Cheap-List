@@ -45,6 +45,8 @@ namespace CheapListBackEnd.Repository
                     au.SocialID = Convert.ToString(sdr["socialID"]);
                     au.ExpoToken = Convert.ToString(sdr["ExpoToken"]);
                     au.PhoneNumber = Convert.ToString(sdr["PhoneNumber"]);
+                    au.Latitude = Convert.ToString(sdr["latitude"]);
+                    au.Longitude = Convert.ToString(sdr["longitude"]);
 
 
                     allUsers.Add(au);
@@ -87,6 +89,8 @@ namespace CheapListBackEnd.Repository
                     au.SocialID = Convert.ToString(sdr["socialID"]);
                     au.ExpoToken = Convert.ToString(sdr["ExpoToken"]);
                     au.PhoneNumber = Convert.ToString(sdr["PhoneNumber"]);
+                    au.Latitude = Convert.ToString(sdr["latitude"]);
+                    au.Longitude = Convert.ToString(sdr["longitude"]);
 
                 }
                 return au;

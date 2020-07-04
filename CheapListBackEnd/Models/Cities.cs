@@ -9,5 +9,11 @@ namespace CheapListBackEnd.Models
     {
         public int cityID { get; set; }
         public string cityName { get; set; }
+
+        public string Lat { get; set; }
+
+        public string Lng { get; set; }
+
+        
     }
 }

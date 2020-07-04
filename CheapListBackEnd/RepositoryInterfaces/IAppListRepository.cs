@@ -13,9 +13,11 @@ namespace CheapListBackEnd.RepositoryInterfaces
         AppList GetAppListById(int groupID, int listID);
         AppList PostAppList(AppList appList);
         int DeleteAppList(int id);
+
         int UpdateListName(AppList appList);
-        int UpdateCityName(string name, int listID);
+        //int UpdateCityName(AppList appList);
         int UpdateLimitPrice(int limit, int listID);
+        int UpdateLocation(AppList appList);
 
 
     }

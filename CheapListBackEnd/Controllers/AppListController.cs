@@ -76,21 +76,22 @@ namespace CheapListBackEnd.Controllers
             }
         }
         
-        [HttpPut]
-        [Route("api/appList/{cityName}/{listID}")]
-        public IHttpActionResult PutCityName(string cityName, int listID)
-        {
-            try
-            {
-                repo.UpdateCityName(cityName, listID);
-                return Ok(cityName);
-            }
-            catch (Exception ex)
-            {
+        //[HttpPut]
+        //[Route("api/appList/UpdateCityName")]
+        //public IHttpActionResult PutCityName(AppList applist)
+        //{
+        //    try
+        //    {
+        //        repo.UpdateCityName(applist);
+        //        return Ok("Succsess");
+        //    }
+        //    catch (Exception ex)
+        //    {
 
-                return Content(HttpStatusCode.BadRequest, ex); ;
-            }
-        }
+        //        return Content(HttpStatusCode.BadRequest, ex); ;
+        //    }
+        //}
+
         [HttpPut]
         [Route("api/appList/limit/{limit}/{listID}")]
         public IHttpActionResult PutLimitPrice(int limit, int listID)
@@ -116,6 +117,23 @@ namespace CheapListBackEnd.Controllers
             {
                 repo.DeleteAppList(id);
                 return Ok(id);
+            }
+            catch (Exception ex)
+            {
+
+                return Content(HttpStatusCode.BadRequest, ex); ;
+            }
+        }
+
+
+        [HttpPut]
+        [Route("api/appList/Location")]
+        public IHttpActionResult PutUpdateLocation(AppList appList)
+        {
+            try
+            {
+                repo.UpdateLocation(appList);
+                return Ok("Succsess");
             }
             catch (Exception ex)
             {

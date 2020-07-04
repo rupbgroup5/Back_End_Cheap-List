@@ -5,18 +5,19 @@ using System.Linq;
 using System.Web;
 using CheapListBackEnd.Models;
 using System.Data.SqlClient;
+using System.Web.UI.WebControls;
 
 namespace CheapListBackEnd.Reposiroty
 {
-    public class SQLAppListRepository :SQLGeneralRepository, IAppListRepository
+    public class SQLAppListRepository : SQLGeneralRepository, IAppListRepository
     {
-        public IEnumerable<AppList>GetAllList(int groupID)
+        public IEnumerable<AppList> GetAllList(int groupID)
         {
             List<AppList> allLists = new List<AppList>();
             SqlConnection con = null;
 
             try
-          {
+            {
                 con = connect(false);
 
                 string query = $"select  * from AppList where groupID = {groupID}";
@@ -33,11 +34,17 @@ namespace CheapListBackEnd.Reposiroty
                     al.ListName = Convert.ToString(sdr["listName"]);
                     al.ListEstimatedPrice = Convert.ToDouble(sdr["listEstimatedPrice"]);
                     al.CityName = Convert.ToString(sdr["cityName"]);
-                    if (al.CityName == null)
+                    if (al.CityName == "")
                     {
-                        al.CityName = "עדיין לא הוגדר עיר לחיפוש";
+                        al.CityName = "הזן עיר לחיפוש";
                     }
+                    al.CityID = (int)sdr["cityID"];
                     al.LimitPrice = (int)sdr["limitPrice"];
+                    al.TypeLocation = (string)sdr["typeLocation"];
+                    al.Latitude = Convert.ToString(sdr["latitude"]);
+                    al.Longitude = Convert.ToString(sdr["Longitude"]);
+                    al.KM_radius = (int)sdr["km_radius"];
+
                     allLists.Add(al);
                 }
 
@@ -71,7 +78,7 @@ namespace CheapListBackEnd.Reposiroty
                 AppList al = new AppList();
 
                 while (sdr.Read())
-                {                   
+                {
                     al.ListID = (int)sdr["listID"];
                     al.GroupID = (int)sdr["groupID"];
                     al.ListName = Convert.ToString(sdr["listName"]);
@@ -81,7 +88,12 @@ namespace CheapListBackEnd.Reposiroty
                     {
                         al.CityName = "הזן עיר לחיפוש";
                     }
+                    al.CityID = (int)sdr["cityID"];
                     al.LimitPrice = (int)sdr["limitPrice"];
+                    al.TypeLocation = (string)sdr["typeLocation"];
+                    al.Latitude = Convert.ToString("latitude");
+                    al.Longitude = Convert.ToString("Longitude");
+                    al.KM_radius = (int)sdr["km_radius"];
                 }
                 return al;
             }
@@ -98,8 +110,8 @@ namespace CheapListBackEnd.Reposiroty
         {
             SqlConnection con = null;
             SqlCommand cmd;
-          
-           
+
+
 
             try
             {
@@ -116,11 +128,11 @@ namespace CheapListBackEnd.Reposiroty
                 appList.ListID = Convert.ToInt32(cmd.ExecuteScalar());
 
                 return appList;
-                
+
             }
             catch (Exception ex)
             {
-                
+
                 throw (ex);
 
             }
@@ -193,35 +205,35 @@ namespace CheapListBackEnd.Reposiroty
 
         }
 
-        public int UpdateCityName(string cityName ,int listID)
-        {
-            SqlConnection con = null;
-            SqlCommand cmd;
-            try
-            {
-                con = connect(false);
-                string str = "update AppList " +
-                             $"set cityName = '{cityName}' " +
-                             $"where listID = {listID}";
+        //public int UpdateCityName(string cityName, int listID)
+        //{
+        //    SqlConnection con = null;
+        //    SqlCommand cmd;
+        //    try
+        //    {
+        //        con = connect(false);
+        //        string str = "update AppList " +
+        //                     $"set cityName = '{cityName}' " +
+        //                     $"where listID = {listID}";
 
-                cmd = new SqlCommand(str, con);
-                return cmd.ExecuteNonQuery();
+        //        cmd = new SqlCommand(str, con);
+        //        return cmd.ExecuteNonQuery();
 
-            }
-            catch (Exception ex)
-            {
-                return 0;
-                throw (ex);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return 0;
+        //        throw (ex);
 
-            }
-            finally
-            {
-                if (con != null)
-                {
-                    con.Close();
-                }
-            }
-        }
+        //    }
+        //    finally
+        //    {
+        //        if (con != null)
+        //        {
+        //            con.Close();
+        //        }
+        //    }
+        //}
 
         public int UpdateLimitPrice(int limit, int listID)
         {
@@ -252,5 +264,35 @@ namespace CheapListBackEnd.Reposiroty
                 }
             }
         }
+
+        public int UpdateLocation(AppList appList) 
+        {
+            SqlConnection con = null;
+            SqlCommand cmd;
+            try
+            {
+                con = connect(false);
+                string str = $"exec [dbo].[spAppList_UpdateListCoords] @typeLocation = '{appList.TypeLocation}', @listID = {appList.ListID}, @lat = '{appList.Latitude}', @long = '{appList.Longitude}', ";
+                str += $"@cityName = '{appList.CityName}', @cityID = {appList.CityID}, @km_radius = {appList.KM_radius} ";
+                cmd = new SqlCommand(str, con);
+                return cmd.ExecuteNonQuery();
+
+            }
+            catch (Exception ex)
+            {
+                return 0;
+                throw (ex);
+
+            }
+            finally
+            {
+                if (con != null)
+                {
+                    con.Close();
+                }
+            }
+        }
+
+        
     }
 }

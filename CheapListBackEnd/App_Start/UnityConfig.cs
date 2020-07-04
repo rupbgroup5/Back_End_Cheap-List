@@ -21,6 +21,7 @@ namespace CheapListBackEnd
             container.RegisterType<IAppGroupRepository, SQLAppGroupRepository>();
             container.RegisterType<IAppListRepository, SQLAppListRepository>();
             container.RegisterType<IAppProductRepository, SQLAppProductRepository>();
+            container.RegisterType<ICitiesRepository, SQLCitiesRepository>();
 
 
 

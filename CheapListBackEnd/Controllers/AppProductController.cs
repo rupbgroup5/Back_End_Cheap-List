@@ -67,38 +67,5 @@ namespace CheapListBackEnd.Controllers
             }
         }
 
-        //Post All cities from API run once
-        [HttpPost]
-        [Route("api/PostCities")]
-        public IHttpActionResult PostCities( List<Cities> cities)
-        {
-            try
-            {
-                repo.PostCities(cities);
-                return Ok("Succsess");
-            }
-            catch (Exception ex)
-            {
-
-                return Content(HttpStatusCode.BadRequest, ex); ;
-            }
-        }
-
-        //Get All cities 
-        [HttpGet]
-        [Route("api/GetCities")]
-        public IHttpActionResult GetCities()
-        {
-            try
-            {
-                List<Cities> Datacities = repo.GetCities().ToList();
-                return Ok(Datacities);
-            }
-            catch (Exception ex)
-            {
-                return Content(HttpStatusCode.BadRequest, ex);
-            }
-        }
-
     }
 }
