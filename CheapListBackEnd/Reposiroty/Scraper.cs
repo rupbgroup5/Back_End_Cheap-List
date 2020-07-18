@@ -1,4 +1,5 @@
-﻿using OpenQA.Selenium;
+﻿using Microsoft.Ajax.Utilities;
+using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using System;
 using System.Collections.Generic;
@@ -9,21 +10,23 @@ namespace CheapListBackEnd.Reposiroty
 {
     public class Scraper
     {
-        public static string GetSrcIMG(string productName)
+        public static List<string> GetSrcIMG(List<string> arrName)
         {
             var driver = new ChromeDriver();
             driver.Url = "https://www.google.com/imghp";
-            var search = driver.FindElementByName("q");
-            search.SendKeys(productName);
-            search.SendKeys(Keys.Enter);
-
-            IWebElement img = driver.FindElementByXPath("//*[@id=\"islrg\"]/div[1]/div[1]/a[1]/div[1]/img");
-            string src = img.GetAttribute("src");
+            List<string> returnValueArr = new List<string>();
+            foreach (var item in arrName)
+            {
+                var search = driver.FindElementByName("q");
+                search.SendKeys(item);
+                search.SendKeys(Keys.Enter);
+                IWebElement img = driver.FindElementByXPath("//*[@id=\"islrg\"]/div[1]/div[1]/a[1]/div[1]/img");
+                string src = img.GetAttribute("src");
+                returnValueArr.Add(src);
+                driver.FindElementByName("q").Clear();
+            }
             driver.Quit();
-            //driver.Navigate().GoToUrl(src);
-
-            //Console.WriteLine("count " + src.Length);
-            return src;
+            return returnValueArr;
         }
 
         

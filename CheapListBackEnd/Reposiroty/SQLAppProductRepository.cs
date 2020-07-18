@@ -60,7 +60,7 @@ namespace CheapListBackEnd.Reposiroty
             {
                 con = connect(false);
                 string str = "SET QUOTED_IDENTIFIER OFF" +
-                              " insert into AppProduct (product_barcode, product_name, product_description, product_image, manufacturer_name, store_id,estimatedProductPrice) " +
+                              " insert into AppProduct (product_barcode, product_name, product_description, product_image, manufacturer_name,estimatedProductPrice) " +
                              $"values(\'{appProduct.product_barcode}\',\'{appProduct.product_name}\',\'{appProduct.product_description}\',\'{appProduct.product_image}\',\'{appProduct.manufacturer_name}\',{appProduct.estimatedProductPrice});" +
                              $"insert into ProductInList(product_barcode,listID,groupID) values (\'{appProduct.product_barcode}\',{appProduct.ListID},{appProduct.GroupId});" +
                              "UPDATE AppList SET listEstimatedPrice = (" +
