@@ -32,7 +32,11 @@ namespace CheapListBackEnd.Reposiroty
                     al.ListID = (int)sdr["listID"];
                     al.GroupID = (int)sdr["groupID"];
                     al.ListName = Convert.ToString(sdr["listName"]);
-                    al.ListEstimatedPrice = Convert.ToDouble(sdr["listEstimatedPrice"]);
+                    if (Convert.IsDBNull(sdr["listEstimatedPrice"]))
+                    {
+                        al.ListEstimatedPrice = 0;
+                    }
+                    else{al.ListEstimatedPrice = Convert.ToDouble(sdr["listEstimatedPrice"]);}
                     al.CityName = Convert.ToString(sdr["cityName"]);
                     if (al.CityName == "")
                     {
