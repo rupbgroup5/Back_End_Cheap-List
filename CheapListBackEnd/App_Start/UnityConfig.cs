@@ -22,7 +22,7 @@ namespace CheapListBackEnd
             container.RegisterType<IAppListRepository, SQLAppListRepository>();
             container.RegisterType<IAppProductRepository, SQLAppProductRepository>();
             container.RegisterType<ICitiesRepository, SQLCitiesRepository>();
-
+            container.RegisterType<IWebCrawlerRepository, WebCrawlerRepository>();
 
 
 
