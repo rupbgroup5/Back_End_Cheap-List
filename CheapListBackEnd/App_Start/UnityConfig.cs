@@ -23,8 +23,7 @@ namespace CheapListBackEnd
             container.RegisterType<IAppProductRepository, SQLAppProductRepository>();
             container.RegisterType<ICitiesRepository, SQLCitiesRepository>();
             container.RegisterType<IWebCrawlerRepository, WebCrawlerRepository>();
-
-
+            
 
             GlobalConfiguration.Configuration.DependencyResolver = new UnityDependencyResolver(container);
         }

@@ -42,8 +42,7 @@ namespace CheapListBackEnd.Reposiroty
                 var imgSrc = divs[0].Descendants("img").FirstOrDefault().ChildAttributes("src").FirstOrDefault().Value;
                 returnValueArr.Add(imgSrc);
             }
-
-            throw new NotImplementedException();
+            return returnValueArr;
         }
     }
 }
