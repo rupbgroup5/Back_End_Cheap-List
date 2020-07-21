@@ -42,14 +42,17 @@ namespace CheapListBackEnd.Reposiroty
 
                 try
                 {
-                    var imgSrc = divs[0].Descendants("img").FirstOrDefault().ChildAttributes("src").FirstOrDefault().Value;
+                  var  imgSrc = divs[0].Descendants("img").FirstOrDefault().ChildAttributes("src").FirstOrDefault().Value;
                     returnValueArr.Add(imgSrc);
                 }
                 catch (NullReferenceException)
                 {
                     returnValueArr.Add(emptyPic);
-
+                   
                 }
+                
+                
+                
             }
             return returnValueArr;
         }
