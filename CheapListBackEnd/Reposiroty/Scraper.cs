@@ -1,4 +1,41 @@
-﻿using Microsoft.Ajax.Utilities;
+﻿
+/** THIS CLASS IN NO LONGER IN USE
+ *-----------------------------------------
+ *-----------------------------------------
+ *-----------------------------------------
+ * THIS CLASS IN NO LONGER IN USE
+ * -----------------------------------------
+ * -----------------------------------------
+ * -----------------------------------------
+ * reason:
+ * A. this class initaly intene to programaticlly shoud 
+ * get imgs from google seach with given arrat of products names.
+ * it does work fine but as a scraper memiks human act it work SLOWLY
+ * (it needs to open a broweser and seach one by one)
+ * 
+ * B.  this scraper works on chrome alone.
+ * 
+ * our solution:
+ * 
+ * we learnt how to build a web crawler which get the given url html page
+ * and in the back stage run a brower throw a CLI (command line) and it doesnt
+ * restricted to a specfice browser.
+ * 
+ *-----------------------------------------
+ *-----------------------------------------
+ *-----------------------------------------
+ * THIS CLASS IN NO LONGER IN USE
+ * -----------------------------------------
+ * -----------------------------------------
+ * -----------------------------------------
+ * 
+ */
+
+
+#region Scraper. - THIS CLASS IN NO LONGER IN USE
+
+
+using Microsoft.Ajax.Utilities;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using System;
@@ -12,7 +49,7 @@ using System.Web;
 namespace CheapListBackEnd.Reposiroty
 {
     public class Scraper
-    {  
+    {
         public static List<string> GetSrcIMG(List<string> arrName)
         {
             List<string> returnValueArr = new List<string>();
@@ -64,3 +101,4 @@ namespace CheapListBackEnd.Reposiroty
 
 
 }
+#endregion
