@@ -18,7 +18,9 @@ namespace CheapListBackEnd.Models
         public int ListID { get; set; }
         public int GroupId { get; set; }
         public double ListEstimatedPrice { get; set; }
-        
+        public int Quantity { get; set; }
+
+
 
 
 

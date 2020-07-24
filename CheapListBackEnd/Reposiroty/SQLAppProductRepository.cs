@@ -20,7 +20,7 @@ namespace CheapListBackEnd.Reposiroty
             {
                 con = connect(false);
 
-                string query = "select A.*, P.listID " +
+                string query = "select A.*, P.listID, p.quantity " +
                                 "from AppProduct A inner join ProductInList P on A.product_barcode = P.product_barcode " +
                                 $"where P.listID = {listID}";
 
@@ -37,6 +37,7 @@ namespace CheapListBackEnd.Reposiroty
                     ap.product_image = Convert.ToString(sdr["product_image"]); ;
                     ap.manufacturer_name = Convert.ToString(sdr["manufacturer_name"]);
                     ap.estimatedProductPrice = Convert.ToDouble(sdr["estimatedProductPrice"]);
+                    ap.Quantity = (int)sdr["quantity"];
                     ap.ListID = (int)sdr["listID"];
                     productCart.Add(ap);
                 }
@@ -62,9 +63,9 @@ namespace CheapListBackEnd.Reposiroty
                 string str = "SET QUOTED_IDENTIFIER OFF" +
                               " insert into AppProduct (product_barcode, product_name, product_description, product_image, manufacturer_name,estimatedProductPrice) " +
                              $"values(\'{appProduct.product_barcode}\',\'{appProduct.product_name}\',\'{appProduct.product_description}\',\'{appProduct.product_image}\',\'{appProduct.manufacturer_name}\',{appProduct.estimatedProductPrice});" +
-                             $"insert into ProductInList(product_barcode,listID,groupID) values (\'{appProduct.product_barcode}\',{appProduct.ListID},{appProduct.GroupId});" +
+                             $"insert into ProductInList(product_barcode,listID,groupID,quantity) values (\'{appProduct.product_barcode}\',{appProduct.ListID},{appProduct.GroupId},{appProduct.Quantity});" +
                              "UPDATE AppList SET listEstimatedPrice = (" +
-                             "select sum(A.estimatedProductPrice) from AppProduct A inner join " +
+                             "select sum(A.estimatedProductPrice * P.quantity ) from AppProduct A inner join " +
                              $"ProductInList P on A.product_barcode = P.product_barcode where listID = {appProduct.ListID})" +
                              $"WHERE listID = {appProduct.ListID};" +
                              "SET QUOTED_IDENTIFIER ON";
