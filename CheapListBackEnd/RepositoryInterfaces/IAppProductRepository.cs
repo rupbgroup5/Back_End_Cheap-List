@@ -12,6 +12,11 @@ namespace CheapListBackEnd.RepositoryInterfaces
         IEnumerable<AppProduct> GetProductCart(int listID);
         int PostAppProduct(AppProduct product);
         int DeleteProduct(string barcode, int listID);
-        
+        int UpdateQuantity(AppProduct appProduct, bool HasAddedQ); //action = ture => plus
+
+
+
+
+
     }
 }

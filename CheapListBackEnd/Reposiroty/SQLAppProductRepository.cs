@@ -95,7 +95,7 @@ namespace CheapListBackEnd.Reposiroty
                 con = connect(false);
                 string str = $"delete from AppProduct where product_barcode = '{barcode}'" +
                               "UPDATE AppList SET listEstimatedPrice = (" +
-                             "select sum(A.estimatedProductPrice) from AppProduct A inner join " +
+                             "select sum(A.estimatedProductPrice * P.quantity ) from AppProduct A inner join " +
                              $"ProductInList P on A.product_barcode = P.product_barcode where listID = {listID})" +
                              $"WHERE listID = {listID};";
                 cmd = new SqlCommand(str, con);
@@ -117,5 +117,48 @@ namespace CheapListBackEnd.Reposiroty
             }
         }
 
+        public int UpdateQuantity(AppProduct appProduct, bool HasAddedQ) //action = ture => plus
+        {
+            SqlConnection con = null;
+            SqlCommand cmd;
+            try
+            {
+                con = connect(false);
+                string str = "";
+                if (HasAddedQ)
+                {
+                    str = "update ProductInList " +
+                          $"Set quantity = quantity + {appProduct.Quantity} " +
+                          $"where product_barcode = '{appProduct.product_barcode}' "; 
+                }
+                else
+                {
+                    str = "update ProductInList " +
+                        $"Set quantity = quantity - {appProduct.Quantity} " +
+                        $"where product_barcode = '{appProduct.product_barcode}'";
+                }
+
+                str += "UPDATE AppList SET listEstimatedPrice = ( " +
+                       "select sum(A.estimatedProductPrice * P.quantity ) from AppProduct A inner join " +
+                      $"ProductInList P on A.product_barcode = P.product_barcode where listID = {appProduct.ListID}) " +
+                      $"WHERE listID = {appProduct.ListID};";
+
+                cmd = new SqlCommand(str, con);
+                return cmd.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                return 0;
+                throw (ex);
+
+            }
+            finally
+            {
+                if (con != null)
+                {
+                    con.Close();
+                }
+            }
+        }
     }
 }

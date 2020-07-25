@@ -63,9 +63,25 @@ namespace CheapListBackEnd.Controllers
             catch (Exception ex)
             {
 
+                return Content(HttpStatusCode.BadRequest, ex); 
+            }
+        }
+        [HttpPut]
+        [Route("api/appProduct/UpdateQuantity/{HasAddedQ}")]
+        public IHttpActionResult UpdateQuantity([FromBody]AppProduct appProduct, bool HasAddedQ) //action = ture => plus
+        {
+            try
+            {
+                repo.UpdateQuantity(appProduct, HasAddedQ);
+                return Ok(appProduct);
+            }
+            catch (Exception ex)
+            {
+
                 return Content(HttpStatusCode.BadRequest, ex); ;
             }
         }
+
 
     }
 }
