@@ -37,7 +37,7 @@ namespace CheapListBackEnd.Controllers
         {
             try
             {
-              IEnumerable<AppGroup> appGroupsList = repo.GetAppGroupById(id);
+                IEnumerable<AppGroup> appGroupsList = repo.GetAppGroupById(id);
                 return Ok(appGroupsList);
             }
             catch (Exception ex)
@@ -47,7 +47,7 @@ namespace CheapListBackEnd.Controllers
         }
 
         // POST api/<controller>
-        public IHttpActionResult Post( [FromBody] AppGroup appgroup )
+        public IHttpActionResult Post([FromBody] AppGroup appgroup)
         {
             try
             {
@@ -62,7 +62,7 @@ namespace CheapListBackEnd.Controllers
         }
 
         // PUT api/<controller>/5
-        public IHttpActionResult PUT ([FromBody] AppGroup appgroup)
+        public IHttpActionResult PUT([FromBody] AppGroup appgroup)
         {
             try
             {
@@ -71,7 +71,6 @@ namespace CheapListBackEnd.Controllers
             }
             catch (Exception ex)
             {
-
                 return Content(HttpStatusCode.BadRequest, ex); ;
             }
         }
@@ -92,5 +91,49 @@ namespace CheapListBackEnd.Controllers
                 return Content(HttpStatusCode.BadRequest, ex); ;
             }
         }
+
+        [HttpPut]
+        [Route("api/appGroups/RemoveUserFromGroup/{userId}/{groupId}")]
+        public IHttpActionResult RemoveUserFromGroup(int userId, int groupId)
+        {
+            try
+            {
+                int res = repo.RemoveParticipantFromGroup(userId, groupId);
+                return res > 0 ? Ok($"the user with the id:{userId} has been deleted from group {groupId}") :
+                throw new EntryPointNotFoundException("there is no user with the provided id");
+            }
+            catch (EntryPointNotFoundException ex)
+            {
+                return Content(HttpStatusCode.BadRequest, ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return Content(HttpStatusCode.BadRequest, ex);
+            }
+        }
+
+        [HttpPut]
+        [Route("api/appGroups/AddUserFromGroup/{userId}/{groupId}")]
+        public IHttpActionResult AddUserFromGroup(int userId, int groupId)
+        {
+            try
+            {
+                int res = repo.AddUserFromGroup(userId, groupId);
+                return res > 0 ? Ok($"the user with the id:{userId} has been added to group {groupId}") :
+                throw new EntryPointNotFoundException($"there is no user with the provided id {userId} to add" +
+                $" or this user is allready in group, groupid: {groupId}");
+            }
+            catch (EntryPointNotFoundException ex)
+            {
+                return Content(HttpStatusCode.BadRequest, ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return Content(HttpStatusCode.BadRequest, ex);
+            }
+
+
+        }
+
     }
 }
