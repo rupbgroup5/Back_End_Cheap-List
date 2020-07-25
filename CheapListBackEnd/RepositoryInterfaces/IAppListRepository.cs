@@ -16,7 +16,7 @@ namespace CheapListBackEnd.RepositoryInterfaces
 
         int UpdateListName(AppList appList);
         //int UpdateCityName(AppList appList);
-        int UpdateLimitPrice(int limit, int listID);
+        int UpdateLimitPrice(double limit, int listID);
         int UpdateLocation(AppList appList);
 
 

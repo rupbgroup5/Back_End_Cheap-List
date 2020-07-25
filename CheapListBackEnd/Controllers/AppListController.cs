@@ -94,7 +94,7 @@ namespace CheapListBackEnd.Controllers
 
         [HttpPut]
         [Route("api/appList/limit/{limit}/{listID}")]
-        public IHttpActionResult PutLimitPrice(int limit, int listID)
+        public IHttpActionResult PutLimitPrice(double limit, int listID)
         {
             try
             {

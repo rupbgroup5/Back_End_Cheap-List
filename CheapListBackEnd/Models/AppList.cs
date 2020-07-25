@@ -14,7 +14,7 @@ namespace CheapListBackEnd.Models
         /*public string CreatorName { get; set; }*/ // for UserInList
         
         public double ListEstimatedPrice { get; set; }
-        public int LimitPrice { get; set; }
+        public double LimitPrice { get; set; }
         public string CityName { get; set; }
         public int CityID { get; set; }
         public string TypeLocation { get; set; }

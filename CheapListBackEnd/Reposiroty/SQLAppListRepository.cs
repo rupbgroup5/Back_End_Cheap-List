@@ -43,7 +43,7 @@ namespace CheapListBackEnd.Reposiroty
                         al.CityName = "הזן עיר לחיפוש";
                     }
                     al.CityID = (int)sdr["cityID"];
-                    al.LimitPrice = (int)sdr["limitPrice"];
+                    al.LimitPrice = (double)sdr["limitPrice"];
                     al.TypeLocation = (string)sdr["typeLocation"];
                     al.Latitude = Convert.ToString(sdr["latitude"]);
                     al.Longitude = Convert.ToString(sdr["Longitude"]);
@@ -239,7 +239,7 @@ namespace CheapListBackEnd.Reposiroty
         //    }
         //}
 
-        public int UpdateLimitPrice(int limit, int listID)
+        public int UpdateLimitPrice(double limit, int listID)
         {
             SqlConnection con = null;
             SqlCommand cmd;
