@@ -51,17 +51,17 @@ namespace CheapListBackEnd.Reposiroty
 
             SqlConnection con = null;
             List<AppGroup> groupList = new List<AppGroup>();
-            
+
             try
             {
                 con = connect(false);
                 string query = $" exec dbo.spAppGroup_GetGroupByUserID @UserID = {id}";
 
-            SqlCommand cmd = new SqlCommand(query, con);
+                SqlCommand cmd = new SqlCommand(query, con);
                 cmd.CommandTimeout = 30;
 
                 SqlDataReader sdr = cmd.ExecuteReader();
-                
+
                 while (sdr.Read())
                 {
                     AppGroup ag = new AppGroup();
@@ -74,7 +74,7 @@ namespace CheapListBackEnd.Reposiroty
                 }
 
                 foreach (var group in groupList)
-                { 
+                {
                     con.Close();
                     con = connect(false);
                     query = $"exec dbo.spUserInGroup_GetMembersByGroupID @groupID = {group.GroupID}";
@@ -107,7 +107,7 @@ namespace CheapListBackEnd.Reposiroty
         {
             SqlConnection con = null;
             SqlCommand cmd;
-            
+
 
             try
             {
@@ -157,6 +157,7 @@ namespace CheapListBackEnd.Reposiroty
                 }
             }
         }
+
         public int DeleteAppGroup(int id)
         {
             SqlConnection con = null;
@@ -184,6 +185,7 @@ namespace CheapListBackEnd.Reposiroty
                 }
             }
         }
+
         public int UpdateGroupName(AppGroup appGroup)
         {
             SqlConnection con = null;
@@ -213,6 +215,61 @@ namespace CheapListBackEnd.Reposiroty
                 }
             }
 
+        }
+
+        public int RemoveParticipantFromGroup(int userId, int groupId)
+        {
+            SqlConnection con = null;
+            SqlCommand cmd;
+            try
+            {
+                con = connect(false);
+
+                string query = $"exec spRemoveUserInGroup @providedUserID={userId}, @providedGroupID={groupId}";
+
+                cmd = new SqlCommand(query, con);
+
+                return cmd.ExecuteNonQuery();
+
+            }
+            catch (Exception exp)
+            {
+                throw exp;
+            }
+            finally
+            {
+                con.Close();
+            }
+
+        }
+
+        public int AddUsers2UserInGroup(AppGroup appGroup)
+        {
+            SqlConnection con = null;
+            SqlCommand cmd;
+            try
+            {
+                con = connect(false);
+                string query = "";
+
+                foreach (var p in appGroup.Participiants)
+                {
+                    query += $"exec spAddUser2UserInGroup @providedUserID={p.UserID}, @providedGroupID={appGroup.GroupID}\r\n";
+                }
+
+                cmd = new SqlCommand(query, con);
+
+                return cmd.ExecuteNonQuery();
+
+            }
+            catch (Exception exp)
+            {
+                throw exp;
+            }
+            finally
+            {
+                con.Close();
+            }
         }
     }
 }
