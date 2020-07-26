@@ -118,7 +118,6 @@ namespace CheapListBackEnd.Controllers
         {
             try
             {
-
                 int res = repo.AddUsers2UserInGroup(appGroup);
                 return res > 0 ?
                 Ok($"all new users have added to group where group id: {appGroup.GroupID}") :
