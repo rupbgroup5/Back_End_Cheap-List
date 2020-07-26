@@ -15,6 +15,6 @@ namespace CheapListBackEnd.RepositoryInterfaces
         int DeleteAppGroup(int id);
         int UpdateGroupName(AppGroup appGroup);
         int RemoveParticipantFromGroup(int userId, int groupId);
-        int AddUserFromGroup(int userId, int groupId);
+        int AddUsers2UserInGroup(AppGroup appGroup);
     }
 }

@@ -144,6 +144,7 @@ namespace CheapListBackEnd.Reposiroty
                 }
             }
         }
+
         public int DeleteAppGroup(int id)
         {
             SqlConnection con = null;
@@ -171,6 +172,7 @@ namespace CheapListBackEnd.Reposiroty
                 }
             }
         }
+
         public int UpdateGroupName(AppGroup appGroup)
         {
             SqlConnection con = null;
@@ -228,15 +230,19 @@ namespace CheapListBackEnd.Reposiroty
 
         }
 
-        public int AddUserFromGroup(int userId, int groupId)
+        public int AddUsers2UserInGroup(AppGroup appGroup)
         {
             SqlConnection con = null;
             SqlCommand cmd;
             try
             {
                 con = connect(false);
+                string query = "";
 
-                string query = $"exec spAddUserInGroup @providedUserID={userId}, @providedGroupID={groupId}";
+                foreach (var p in appGroup.Participiants)
+                {
+                    query += $"exec spAddUser2UserInGroup @providedUserID={p.UserID}, @providedGroupID={appGroup.GroupID}\r\n";
+                }
 
                 cmd = new SqlCommand(query, con);
 

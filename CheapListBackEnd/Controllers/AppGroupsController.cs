@@ -113,19 +113,16 @@ namespace CheapListBackEnd.Controllers
         }
 
         [HttpPut]
-        [Route("api/appGroups/AddUserFromGroup/{userId}/{groupId}")]
-        public IHttpActionResult AddUserFromGroup(int userId, int groupId)
+        [Route("api/appGroups/AddUsers2UserInGroup")]
+        public IHttpActionResult AddUsers2UserInGroup([FromBody] AppGroup appGroup) 
         {
             try
             {
-                int res = repo.AddUserFromGroup(userId, groupId);
-                return res > 0 ? Ok($"the user with the id:{userId} has been added to group {groupId}") :
-                throw new EntryPointNotFoundException($"there is no user with the provided id {userId} to add" +
-                $" or this user is allready in group, groupid: {groupId}");
-            }
-            catch (EntryPointNotFoundException ex)
-            {
-                return Content(HttpStatusCode.BadRequest, ex.Message);
+
+                int res = repo.AddUsers2UserInGroup(appGroup);
+                return res > 0 ?
+                Ok($"all new users have added to group where group id: {appGroup.GroupID}") :
+                throw new Exception($"the new users haven't added to the  group where group id: {appGroup.GroupID}");
             }
             catch (Exception ex)
             {
