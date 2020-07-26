@@ -192,6 +192,8 @@
     <Compile Include="Controllers\AppProductController.cs" />
     <Compile Include="Controllers\AppUsersController.cs" />
     <Compile Include="Controllers\CitiesController.cs" />
+    <Compile Include="Controllers\INotications.cs" />
+    <Compile Include="Controllers\NotificationsController.cs" />
     <Compile Include="Controllers\ScraperController.cs" />
     <Compile Include="Controllers\WebCrawlerController.cs" />
     <Compile Include="driver\Navigate.cs" />
@@ -201,6 +203,7 @@
     <Compile Include="Models\AppProduct.cs" />
     <Compile Include="Models\Cities.cs" />
     <Compile Include="Models\Contact.cs" />
+    <Compile Include="Models\Notifications.cs" />
     <Compile Include="Models\UpdateAppUser.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -214,12 +217,14 @@
     <Compile Include="Reposiroty\SQLAppUsersRepository.cs" />
     <Compile Include="Reposiroty\SQLCitiesRepository.cs" />
     <Compile Include="Reposiroty\SQLGeneralRepository.cs" />
+    <Compile Include="Reposiroty\SQLNotificationsRepository.cs" />
     <Compile Include="Reposiroty\WebCrawlerRepository.cs" />
     <Compile Include="RepositoryInterfaces\IAppGroupRepository.cs" />
     <Compile Include="RepositoryInterfaces\IAppListRepository.cs" />
     <Compile Include="RepositoryInterfaces\IAppProductRepository.cs" />
     <Compile Include="RepositoryInterfaces\IAppUsersRepository.cs" />
     <Compile Include="RepositoryInterfaces\ICitiesRepository.cs" />
+    <Compile Include="RepositoryInterfaces\INotificationsRepository.cs" />
     <Compile Include="RepositoryInterfaces\IWebCrawlerRepository.cs" />
   </ItemGroup>
   <ItemGroup>

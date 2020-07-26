@@ -46,7 +46,7 @@ namespace CheapListBackEnd.Controllers
             }
         }
 
-        // POST api/<controller>
+ 
         public IHttpActionResult Post( [FromBody] AppGroup appgroup )
         {
             try
@@ -61,7 +61,6 @@ namespace CheapListBackEnd.Controllers
             }
         }
 
-        // PUT api/<controller>/5
         public IHttpActionResult PUT ([FromBody] AppGroup appgroup)
         {
             try

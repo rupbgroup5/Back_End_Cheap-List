@@ -87,6 +87,7 @@ namespace CheapListBackEnd.Reposiroty
                         au.UserID = (int)sdr["userID"];
                         au.UserName = (string)sdr["userName"];
                         au.IsAdmin = Convert.ToBoolean(sdr["isAdmin"]);
+                        au.ExpoToken = Convert.ToString(sdr["ExpoToken"]);
                         group.Participiants.Add(au);
                     }
                 }
@@ -123,11 +124,23 @@ namespace CheapListBackEnd.Reposiroty
 
                 }
                 //str = str.Substring(0, str.Length - 1);
-                str += "select @LastGroupID as GroupID";
-
-
+               
                 cmd = new SqlCommand(str, con);
                 appGroup.GroupID = Convert.ToInt32(cmd.ExecuteScalar());
+
+                con.Close();
+                con = connect(false);
+                str = $"select userName from AppUser where userID = {appGroup.UserID}";
+                cmd = new SqlCommand(str, con);
+                SqlDataReader sdr = cmd.ExecuteReader(); 
+                AppUser admin = new AppUser();
+                if (sdr.Read())
+                {
+                    admin.UserName = (string)sdr["userName"];
+                }               
+                admin.UserID = appGroup.UserID;
+                admin.IsAdmin = true;
+                appGroup.Participiants.Add(admin);
                 return appGroup;
 
             }
