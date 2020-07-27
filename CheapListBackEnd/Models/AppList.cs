@@ -21,6 +21,7 @@ namespace CheapListBackEnd.Models
         public string Latitude { get; set; }
         public string Longitude { get; set; }
         public int KM_radius { get; set; }
+        public int Badge { get; set; }
 
 
 

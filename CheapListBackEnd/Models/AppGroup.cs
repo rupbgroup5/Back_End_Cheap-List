@@ -13,6 +13,8 @@ namespace CheapListBackEnd.Models
         public string GroupImg { get; set; }    
         public int UserID { get; set; }
         public string UserName { get; set; }
+
+        public int Badge { get; set; }
         public List<AppUser> Participiants { get; set; }
 
 

@@ -70,6 +70,11 @@ namespace CheapListBackEnd.Reposiroty
                     ag.GroupImg = Convert.ToString(sdr["groupImg"]);
                     ag.UserID = id;
                     ag.UserName = (string)sdr["userName"];
+                    if (Convert.IsDBNull(sdr["badge"]))
+                    {
+                        ag.Badge = 0;
+                    }
+                    else ag.Badge = (int)sdr["badge"];
                     groupList.Add(ag);
                 }
 
@@ -123,8 +128,8 @@ namespace CheapListBackEnd.Reposiroty
                     str += $",({user.UserID},@LastGroupID,0)";
 
                 }
-                //str = str.Substring(0, str.Length - 1);
-               
+                str += "select @LastGroupID";
+
                 cmd = new SqlCommand(str, con);
                 appGroup.GroupID = Convert.ToInt32(cmd.ExecuteScalar());
 
@@ -132,12 +137,12 @@ namespace CheapListBackEnd.Reposiroty
                 con = connect(false);
                 str = $"select userName from AppUser where userID = {appGroup.UserID}";
                 cmd = new SqlCommand(str, con);
-                SqlDataReader sdr = cmd.ExecuteReader(); 
+                SqlDataReader sdr = cmd.ExecuteReader();
                 AppUser admin = new AppUser();
                 if (sdr.Read())
                 {
                     admin.UserName = (string)sdr["userName"];
-                }               
+                }
                 admin.UserID = appGroup.UserID;
                 admin.IsAdmin = true;
                 appGroup.Participiants.Add(admin);

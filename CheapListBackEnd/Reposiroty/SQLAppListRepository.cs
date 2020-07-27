@@ -11,7 +11,7 @@ namespace CheapListBackEnd.Reposiroty
 {
     public class SQLAppListRepository : SQLGeneralRepository, IAppListRepository
     {
-        public IEnumerable<AppList> GetAllList(int groupID)
+        public IEnumerable<AppList> GetAllListbyGroupId(int groupID)
         {
             List<AppList> allLists = new List<AppList>();
             SqlConnection con = null;
@@ -20,7 +20,7 @@ namespace CheapListBackEnd.Reposiroty
             {
                 con = connect(false);
 
-                string query = $"select  * from AppList where groupID = {groupID}";
+                string query = $"exec dbo.spAppList_GetAllListByGroupID  @groupID = {groupID}";
 
                 SqlCommand cmd = new SqlCommand(query, con);
 
@@ -36,7 +36,7 @@ namespace CheapListBackEnd.Reposiroty
                     {
                         al.ListEstimatedPrice = 0;
                     }
-                    else{al.ListEstimatedPrice = Convert.ToDouble(sdr["listEstimatedPrice"]);}
+                    else { al.ListEstimatedPrice = Convert.ToDouble(sdr["listEstimatedPrice"]); }
                     al.CityName = Convert.ToString(sdr["cityName"]);
                     if (al.CityName == "")
                     {
@@ -48,7 +48,11 @@ namespace CheapListBackEnd.Reposiroty
                     al.Latitude = Convert.ToString(sdr["latitude"]);
                     al.Longitude = Convert.ToString(sdr["Longitude"]);
                     al.KM_radius = (int)sdr["km_radius"];
-
+                    if (Convert.IsDBNull(sdr["badge"]))
+                    {
+                        al.Badge = 0;
+                    }
+                    else al.Badge = (int)sdr["badge"];
                     allLists.Add(al);
                 }
 
@@ -64,52 +68,57 @@ namespace CheapListBackEnd.Reposiroty
             }
 
         }
-        public AppList GetAppListById(int groupID, int listID)
-        {
+        //public AppList GetAppListById(int groupID, int listID)
+        //{
 
-            SqlConnection con = null;
+        //    SqlConnection con = null;
 
-            try
-            {
-                con = connect(true);
+        //    try
+        //    {
+        //        con = connect(true);
 
-                string str = $"select  * from AppList where groupID={groupID} and listID = {listID} ";
+        //        string str = $"select * from AppList where groupID = {groupID} and listID = {listID}";
 
-                SqlCommand cmd = new SqlCommand(str, con);
+        //        SqlCommand cmd = new SqlCommand(str, con);
 
-                SqlDataReader sdr = cmd.ExecuteReader();
+        //        SqlDataReader sdr = cmd.ExecuteReader();
 
-                AppList al = new AppList();
+        //        AppList al = new AppList();
 
-                while (sdr.Read())
-                {
-                    al.ListID = (int)sdr["listID"];
-                    al.GroupID = (int)sdr["groupID"];
-                    al.ListName = Convert.ToString(sdr["listName"]);
-                    al.ListEstimatedPrice = Convert.ToDouble(sdr["listEstimatedPrice"]);
-                    al.CityName = Convert.ToString(sdr["cityName"]);
-                    if (al.CityName == null)
-                    {
-                        al.CityName = "הזן עיר לחיפוש";
-                    }
-                    al.CityID = (int)sdr["cityID"];
-                    al.LimitPrice = (int)sdr["limitPrice"];
-                    al.TypeLocation = (string)sdr["typeLocation"];
-                    al.Latitude = Convert.ToString("latitude");
-                    al.Longitude = Convert.ToString("Longitude");
-                    al.KM_radius = (int)sdr["km_radius"];
-                }
-                return al;
-            }
-            catch (Exception exp)
-            {
-                throw (exp);
-            }
-            finally
-            {
-                con.Close();
-            }
-        }
+        //        while (sdr.Read())
+        //        {
+        //            al.ListID = (int)sdr["listID"];
+        //            al.GroupID = (int)sdr["groupID"];
+        //            al.ListName = Convert.ToString(sdr["listName"]);
+        //            al.ListEstimatedPrice = Convert.ToDouble(sdr["listEstimatedPrice"]);
+        //            al.CityName = Convert.ToString(sdr["cityName"]);
+        //            if (al.CityName == null)
+        //            {
+        //                al.CityName = "הזן עיר לחיפוש";
+        //            }
+        //            al.CityID = (int)sdr["cityID"];
+        //            al.LimitPrice = (int)sdr["limitPrice"];
+        //            al.TypeLocation = (string)sdr["typeLocation"];
+        //            al.Latitude = Convert.ToString("latitude");
+        //            al.Longitude = Convert.ToString("Longitude");
+        //            al.KM_radius = (int)sdr["km_radius"];
+        //            if (Convert.IsDBNull(sdr["badge"]))
+        //            {
+        //                al.Badge = 0;
+        //            }
+        //            else al.Badge = (int)sdr["badge"];
+        //        }
+        //        return al;
+        //    }
+        //    catch (Exception exp)
+        //    {
+        //        throw (exp);
+        //    }
+        //    finally
+        //    {
+        //        con.Close();
+        //    }
+        //}
         public AppList PostAppList(AppList appList)
         {
             SqlConnection con = null;
@@ -269,7 +278,7 @@ namespace CheapListBackEnd.Reposiroty
             }
         }
 
-        public int UpdateLocation(AppList appList) 
+        public int UpdateLocation(AppList appList)
         {
             SqlConnection con = null;
             SqlCommand cmd;
@@ -297,6 +306,6 @@ namespace CheapListBackEnd.Reposiroty
             }
         }
 
-        
+
     }
 }

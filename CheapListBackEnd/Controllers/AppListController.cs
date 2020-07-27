@@ -21,7 +21,7 @@ namespace CheapListBackEnd.Controllers
        {
             try
             {
-                List<AppList> AppList = repo.GetAllList(groupID).ToList();
+                List<AppList> AppList = repo.GetAllListbyGroupId(groupID).ToList();
                 return Ok(AppList);
             }
             catch (Exception ex)
@@ -30,21 +30,21 @@ namespace CheapListBackEnd.Controllers
             }
         }
 
-        // GET api/<controller>/5
-        [HttpGet]
-        [Route("api/appList/{groupID}/{listID}")]
-        public IHttpActionResult Get(int groupID, int listID)
-        {
-            try
-            {
-                AppList appList = repo.GetAppListById(groupID, listID); ;
-                return Ok(appList);
-            }
-            catch (Exception ex)
-            {
-                return Content(HttpStatusCode.BadRequest, ex);
-            }
-        }
+       
+        //[HttpGet]
+        //[Route("api/appList/{groupID}/{listID}")]
+        //public IHttpActionResult Get(int groupID, int listID)
+        //{
+        //    try
+        //    {
+        //        AppList appList = repo.GetAppListById(groupID, listID); ;
+        //        return Ok(appList);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return Content(HttpStatusCode.BadRequest, ex);
+        //    }
+        //}
 
         // POST api/<controller>
         public IHttpActionResult Post([FromBody] AppList appList)
