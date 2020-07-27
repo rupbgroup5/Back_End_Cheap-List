@@ -52,6 +52,48 @@ namespace CheapListBackEnd.Reposiroty
             }
         }
 
+        public List<Notifications> GetNotifactionsByGroupID(int userID, int groupID)
+        {
+            List<Notifications> allNotifications = new List<Notifications>();
+            SqlConnection con = null;
+
+            try
+            {
+                con = connect(false);
+
+                string query = $"exec Notifications_GetNotificationsByGroupID @userTo=${userID}, @GroupID=${groupID}";
+
+                SqlCommand cmd = new SqlCommand(query, con);
+
+                SqlDataReader sdr = cmd.ExecuteReader();
+
+                while (sdr.Read())
+                {
+                    Notifications n = new Notifications();
+                    n.NotID = (int)sdr["notID"];
+                    n.UserFrom = (int)sdr["userFrom"];
+                    n.UserTo = (int)sdr["userTo"];
+                    n.Title = Convert.ToString(sdr["title"]);
+                    n.TypeNot = Convert.ToString(sdr["typeNot"]);
+                    n.DataObject = Convert.ToString(sdr["dataObject"]);
+                    n.HasRead = Convert.ToBoolean(sdr["hasRead"]);
+                    n.HasDone = Convert.ToBoolean(sdr["hasDone"]);
+                    n.GroupID = (int)sdr["groupID"];
+                    n.ListID = (int)sdr["listID"];
+                    allNotifications.Add(n);
+                }
+                return allNotifications;
+            }
+            catch (Exception exp)
+            {
+                throw (exp);
+            }
+            finally
+            {
+                con.Close();
+            }
+        }
+
         public int PostNotifactions(Notifications notifications)
         {
             SqlConnection con = null;
@@ -117,5 +159,6 @@ namespace CheapListBackEnd.Reposiroty
                 }
             }
         }
+
     }
 }
