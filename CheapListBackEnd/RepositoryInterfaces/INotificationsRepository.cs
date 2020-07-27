@@ -10,5 +10,7 @@ namespace CheapListBackEnd.RepositoryInterfaces
     {
         List<Notifications> GetNotifactionsByID(int id);
         int PostNotifactions(Notifications notifactions);
+
+        
     }
 }

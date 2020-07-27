@@ -16,12 +16,12 @@ namespace CheapListBackEnd.Controllers
 
         // GET api/<controller>
         [HttpGet]
-        [Route("api/appList/{groupID}")]
-        public IHttpActionResult Get(int groupID)
+        [Route("api/appList/{groupID}/{userID}")]
+        public IHttpActionResult Get(int groupID,int userID)
        {
             try
             {
-                List<AppList> AppList = repo.GetAllListbyGroupId(groupID).ToList();
+                List<AppList> AppList = repo.GetAllListbyGroupId(groupID,userID).ToList();
                 return Ok(AppList);
             }
             catch (Exception ex)

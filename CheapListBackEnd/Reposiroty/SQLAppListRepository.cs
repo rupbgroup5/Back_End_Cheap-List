@@ -11,7 +11,7 @@ namespace CheapListBackEnd.Reposiroty
 {
     public class SQLAppListRepository : SQLGeneralRepository, IAppListRepository
     {
-        public IEnumerable<AppList> GetAllListbyGroupId(int groupID)
+        public IEnumerable<AppList> GetAllListbyGroupId(int groupID,int userID)
         {
             List<AppList> allLists = new List<AppList>();
             SqlConnection con = null;
@@ -20,7 +20,7 @@ namespace CheapListBackEnd.Reposiroty
             {
                 con = connect(false);
 
-                string query = $"exec dbo.spAppList_GetAllListByGroupID  @groupID = {groupID}";
+                string query = $"exec dbo.spAppList_GetAllListByGroupID  @groupID = {groupID}, @userTo ={userID}";
 
                 SqlCommand cmd = new SqlCommand(query, con);
 

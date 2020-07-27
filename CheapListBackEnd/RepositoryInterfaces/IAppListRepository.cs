@@ -9,7 +9,7 @@ namespace CheapListBackEnd.RepositoryInterfaces
 {
     public interface IAppListRepository
     {
-        IEnumerable<AppList> GetAllListbyGroupId(int groupID);
+        IEnumerable<AppList> GetAllListbyGroupId(int groupID, int userID);
 
         //AppList GetAppListById(int groupID, int listID);
         AppList PostAppList(AppList appList);
