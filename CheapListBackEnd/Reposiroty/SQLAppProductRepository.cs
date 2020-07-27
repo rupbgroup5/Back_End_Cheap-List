@@ -68,6 +68,7 @@ namespace CheapListBackEnd.Reposiroty
                              "select sum(A.estimatedProductPrice * P.quantity ) from AppProduct A inner join " +
                              $"ProductInList P on A.product_barcode = P.product_barcode where listID = {appProduct.ListID})" +
                              $"WHERE listID = {appProduct.ListID};" +
+                             $"delete Notifications where notID = ${appProduct.NotID}" +
                              "SET QUOTED_IDENTIFIER ON";
                 cmd = new SqlCommand(str, con);
                 return cmd.ExecuteNonQuery();

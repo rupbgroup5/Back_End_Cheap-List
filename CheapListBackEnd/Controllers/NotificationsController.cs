@@ -15,12 +15,12 @@ namespace CheapListBackEnd.Controllers
         public NotificationsController(INotificationsRepository ir) => repo = ir;
 
         [HttpGet]
-        [Route("api/Notifications/{id}")]
-        public IHttpActionResult Get(int id)
+        [Route("api/Notifications/{userID}/{listID}")]
+        public IHttpActionResult Get(int userID, int listID)
         {
             try
             {
-                IEnumerable<Notifications> allNotifications = repo.GetNotifactionsByID(id).ToList();
+                IEnumerable<Notifications> allNotifications = repo.GetNotifactionsByID(userID, listID).ToList();
                 return Ok(allNotifications);
             }
             catch (Exception ex)
@@ -42,14 +42,24 @@ namespace CheapListBackEnd.Controllers
             }
         }
 
-        // PUT api/<controller>/5
+       
         public void Put(int id, [FromBody]string value)
         {
+
         }
 
-        // DELETE api/<controller>/5
-        public void Delete(int id)
+       
+        public IHttpActionResult Delete([FromBody] Notifications notifications)
         {
+            try
+            {
+                repo.DeleteNotifactions(notifications);
+                return Ok(notifications);
+            }
+            catch (Exception ex)
+            {
+                return Content(HttpStatusCode.BadRequest, ex); ;
+            }
         }
     }
 }

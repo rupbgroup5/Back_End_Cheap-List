@@ -10,7 +10,7 @@ namespace CheapListBackEnd.Reposiroty
 {
     public class SQLNotificationsRepository : SQLGeneralRepository, INotificationsRepository
     {
-        public List<Notifications> GetNotifactionsByID(int id)
+        public List<Notifications> GetNotifactionsByID(int userID, int listID)
         {
             List<Notifications> allNotifications = new List<Notifications>();
             SqlConnection con = null;
@@ -19,7 +19,7 @@ namespace CheapListBackEnd.Reposiroty
             {
                 con = connect(false);
 
-                string query = $"select * from Notifications where userTo = {id}";
+                string query = $"exec dbo.Notifications_GetNotificationsByID @userTo = {userID}, @listID  = {listID}";
 
                 SqlCommand cmd = new SqlCommand(query, con);
 
@@ -61,10 +61,14 @@ namespace CheapListBackEnd.Reposiroty
             try
             {
                 con = connect(false);
-                string str = "insert into Notifications " +
-                              "(userFrom, userTo, title, typeNot, dataObject, groupID, listID ) " +
-                              $"values({notifications.UserFrom}, {notifications.UserTo}, '{notifications.Title}', " +
-                              $"'{notifications.TypeNot}', '{notifications.DataObject}', {notifications.GroupID}, {notifications.ListID})";
+                string str = $"exec dbo.Notifications_PostNotifications @userFrom = {notifications.UserFrom}, @userTo = {notifications.UserTo},";
+                       str += $"@title = '{notifications.Title}', @typeNot = '{notifications.Title}', @dataObject = '{notifications.DataObject}',";
+                       str += $"@groupID = {notifications.GroupID}, @listID = {notifications.ListID}";
+
+                //string str = "insert into Notifications " +
+                //              "(userFrom, userTo, title, typeNot, dataObject, groupID, listID ) " +
+                //              $"values({notifications.UserFrom}, {notifications.UserTo}, '{notifications.Title}', " +
+                //              $"'{notifications.TypeNot}', '{notifications.DataObject}', {notifications.GroupID}, {notifications.ListID})";
 
                 cmd = new SqlCommand(str, con);
                 return cmd.ExecuteNonQuery();
@@ -75,6 +79,34 @@ namespace CheapListBackEnd.Reposiroty
                 return 0;
                 throw (ex);
 
+
+            }
+            finally
+            {
+                if (con != null)
+                {
+                    con.Close();
+                }
+            }
+        }
+
+        public int DeleteNotifactions(Notifications notifications)
+        {
+            SqlConnection con = null;
+            SqlCommand cmd;
+            try
+            {
+                con = connect(false);
+                string str = $"procedure dbo.Notifications_DeleteNotifications @hasRead = {notifications.HasRead}, @hasDone = {notifications.HasDone}";
+
+                cmd = new SqlCommand(str, con);
+                return cmd.ExecuteNonQuery();
+
+            }
+            catch (Exception ex)
+            {
+                return 0;
+                throw (ex);
 
             }
             finally

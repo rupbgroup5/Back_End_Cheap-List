@@ -20,6 +20,8 @@ namespace CheapListBackEnd.Models
         public double ListEstimatedPrice { get; set; }
         public int Quantity { get; set; }
 
+        public int NotID { get; set; }
+
 
 
 
