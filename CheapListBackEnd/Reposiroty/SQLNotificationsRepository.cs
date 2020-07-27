@@ -36,6 +36,8 @@ namespace CheapListBackEnd.Reposiroty
                     n.DataObject = Convert.ToString(sdr["dataObject"]);
                     n.HasRead = Convert.ToBoolean(sdr["hasRead"]);
                     n.HasDone = Convert.ToBoolean(sdr["hasDone"]);
+                    n.GroupID = (int)sdr["groupID"];
+                    n.ListID = (int)sdr["listID"];
                     allNotifications.Add(n);
                 }
                 return allNotifications;
@@ -60,9 +62,9 @@ namespace CheapListBackEnd.Reposiroty
             {
                 con = connect(false);
                 string str = "insert into Notifications " +
-                              "(userFrom, userTo, title, typeNot, dataObject) " +
+                              "(userFrom, userTo, title, typeNot, dataObject, groupID, listID ) " +
                               $"values({notifications.UserFrom}, {notifications.UserTo}, '{notifications.Title}', " +
-                              $"'{notifications.TypeNot}', '{notifications.DataObject}')";
+                              $"'{notifications.TypeNot}', '{notifications.DataObject}', {notifications.GroupID}, {notifications.ListID})";
 
                 cmd = new SqlCommand(str, con);
                 return cmd.ExecuteNonQuery();

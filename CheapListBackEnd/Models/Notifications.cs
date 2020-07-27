@@ -16,6 +16,8 @@ namespace CheapListBackEnd.Models
         public bool HasRead { get; set; }
         public bool HasDone { get; set; }
         public string TypeNot { get; set; }
+        public int GroupID { get; set; }
+        public int ListID { get; set; }
 
 
     }
