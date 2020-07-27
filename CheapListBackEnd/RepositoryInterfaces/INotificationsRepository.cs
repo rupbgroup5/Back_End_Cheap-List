@@ -10,7 +10,7 @@ namespace CheapListBackEnd.RepositoryInterfaces
     {
         List<Notifications> GetNotifactionsByID(int userID, int listID);
         int PostNotifactions(Notifications notifactions);
-        public int DeleteNotifactions(Notifications notifications);
+        int DeleteNotifactions(Notifications notifications);
 
 
 
