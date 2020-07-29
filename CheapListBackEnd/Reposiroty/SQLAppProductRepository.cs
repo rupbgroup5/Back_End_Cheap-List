@@ -64,9 +64,9 @@ namespace CheapListBackEnd.Reposiroty
                               $"BEGIN " +
                               "SET QUOTED_IDENTIFIER OFF " +
                               "insert into AppProduct (product_barcode, product_name, product_description, product_image,estimatedProductPrice) " +
-                             $"values(\"{appProduct.product_barcode}\",\"{appProduct.product_name}\",\"{appProduct.product_description}\",\"{appProduct.product_image}\",{appProduct.estimatedProductPrice}); " +
+                             $"values(\'{appProduct.product_barcode}\',\'{appProduct.product_name}\',\'{appProduct.product_description}\',\'{appProduct.product_image}\',{appProduct.estimatedProductPrice}); " +
                              "END END " +
-                             $"insert into ProductInList(product_barcode,listID,groupID,quantity) values (\"{appProduct.product_barcode}\",{appProduct.ListID},{appProduct.GroupId},{appProduct.Quantity}); " +
+                             $"insert into ProductInList(product_barcode,listID,groupID,quantity) values (\'{appProduct.product_barcode}\',{appProduct.ListID},{appProduct.GroupId},{appProduct.Quantity}); " +
                              " UPDATE AppList SET listEstimatedPrice = ( " +
                              "select sum(A.estimatedProductPrice * P.quantity ) from AppProduct A inner join " +
                              $"ProductInList P on A.product_barcode = P.product_barcode where listID = {appProduct.ListID}) " +

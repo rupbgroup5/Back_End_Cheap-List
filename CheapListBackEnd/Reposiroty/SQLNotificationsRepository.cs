@@ -38,6 +38,7 @@ namespace CheapListBackEnd.Reposiroty
                     n.HasDone = Convert.ToBoolean(sdr["hasDone"]);
                     n.GroupID = (int)sdr["groupID"];
                     n.ListID = (int)sdr["listID"];
+                    n.Body = Convert.ToString(sdr["body"]);
                     allNotifications.Add(n);
                 }
                 return allNotifications;
@@ -116,11 +117,7 @@ namespace CheapListBackEnd.Reposiroty
                 string str = $"exec dbo.Notifications_PostNotifications @userFrom = {notifications.UserFrom}, @userTo = {notifications.UserTo},";
                 str += $"@title = \'{notifications.Title}\', @typeNot = \'{notifications.TypeNot}\', @dataObject = \'{replaceTheName}\',";
                 str += $"@groupID = {notifications.GroupID}, @listID = {notifications.ListID}, @body = \'{notifications.Body}\' ";
-
-                //string str = "insert into Notifications " +
-                //              "(userFrom, userTo, title, typeNot, dataObject, groupID, listID ) " +
-                //              $"values({notifications.UserFrom}, {notifications.UserTo}, '{notifications.Title}', " +
-                //              $"'{notifications.TypeNot}', '{notifications.DataObject}', {notifications.GroupID}, {notifications.ListID})";
+;
 
 
 
@@ -202,11 +199,12 @@ namespace CheapListBackEnd.Reposiroty
                 string str = "";
                 foreach (var item in notifications)
                 {
-                    str += $"exec dbo.Notifications_UpdateNotifications @notID = {item.NotID}";
+                    str += $"exec dbo.Notifications_UpdateNotifications @notID = {item.NotID}, @hasRead = {item.HasRead}, @typeNot = '{item.TypeNot}'; ";
                 }
                 str += "delete Notifications where hasRead = 1 and typeNot != 'AskProduct'";
                 cmd = new SqlCommand(str, con);
                 return cmd.ExecuteNonQuery();
+
 
             }
             catch (Exception ex)
