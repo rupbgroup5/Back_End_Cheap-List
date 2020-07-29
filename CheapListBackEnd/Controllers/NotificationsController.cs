@@ -18,6 +18,7 @@ namespace CheapListBackEnd.Controllers
         [Route("api/Notifications/{userID}/{listID}")]
         public IHttpActionResult Get(int userID, int listID)
         {
+
             try
             {
                 IEnumerable<Notifications> allNotifications = repo.GetNotifactionsByID(userID, listID).ToList();

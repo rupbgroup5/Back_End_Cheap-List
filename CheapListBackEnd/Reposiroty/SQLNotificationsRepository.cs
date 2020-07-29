@@ -148,15 +148,15 @@ namespace CheapListBackEnd.Reposiroty
                 string str = "";
                 foreach (var userId in notification.UsersTo)
                 {
-                    str += $"exec dbo.Notifications_PostNotifications" +
-                        $"@userFrom = {notification.UserFrom}," +
-                        $"@userTo = {userId}," +
-                        $"@title = '{notification.Title}'," +
-                        $"@body = '${notification.Body}'"+
-                        $"@typeNot = '{notification.Title}'," +
-                        $"@dataObject = '{notification.DataObject}'," +
-                        $"@groupID = {notification.GroupID}," +
-                        $"@listID = {notification.ListID} /r/n";
+                    str += $"exec dbo.Notifications_PostNotifications\r\n" +
+                        $"@userFrom = {notification.UserFrom},\r\n" +
+                        $"@userTo = {userId},\r\n" +
+                        $"@title = '{notification.Title}',\r\n" +
+                        $"@body = '{notification.Body}',\r\n" +
+                        $"@typeNot = '{notification.Title}',\r\n" +
+                        $"@dataObject = '{notification.DataObject}',\r\n" +
+                        $"@groupID = null,\r\n" +
+                        $"@listID = null\r\n";
                 }
                    
 
