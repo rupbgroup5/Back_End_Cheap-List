@@ -117,7 +117,7 @@ namespace CheapListBackEnd.Reposiroty
                 string str = $"exec dbo.Notifications_PostNotifications @userFrom = {notifications.UserFrom}, @userTo = {notifications.UserTo},";
                 str += $"@title = \'{notifications.Title}\', @typeNot = \'{notifications.TypeNot}\', @dataObject = \'{replaceTheName}\',";
                 str += $"@groupID = {notifications.GroupID}, @listID = {notifications.ListID}, @body = \'{notifications.Body}\' ";
-;
+                ;
 
 
 
@@ -143,8 +143,6 @@ namespace CheapListBackEnd.Reposiroty
             }
         }
 
-
-
         public int PostNot2MultipleParticipants(Notifications notification)
         {
             SqlConnection con = null;
@@ -155,18 +153,26 @@ namespace CheapListBackEnd.Reposiroty
             {
                 con = connect(false);
 
+
                 string str = "";
                 foreach (var userId in notification.UsersTo)
                 {
-                    str += $"exec dbo.Notifications_PostNotifications" +
-                        $"@userFrom = {notification.UserFrom}," +
-                        $"@userTo = {userId}," +
-                        $"@title = '{notification.Title}'," +
-                        $"@body = '${notification.Body}'" +
-                        $"@typeNot = '{notification.Title}'," +
-                        $"@dataObject = '{notification.DataObject}'," +
-                        $"@groupID = {notification.GroupID}," +
-                        $"@listID = {notification.ListID} /r/n";
+                    str += $"exec dbo.Notifications_PostNotifications ";
+                    str += $"@userFrom = {notification.UserFrom}, ";
+                    str += $"@userTo = {userId}, ";
+                    str += $"@title = \'{notification.Title}\', ";
+                    str += $"@body = \'{notification.Body}\', ";
+                    str += $"@typeNot =  \'{notification.TypeNot}\', ";
+                    str += $"@dataObject = '{notification.DataObject}', ";
+                    if (notification.GroupID == 0)
+                    {
+                        str += $"@groupID = null, ";
+                    }else str += $"@groupID = {notification.GroupID}, ";
+                    if (notification.ListID == 0)
+                    {
+                        str += $"@listID = null; ";
+                    }
+                   else str += $"@listID = {notification.ListID}; \r\n ";
                 }
 
 
@@ -176,6 +182,7 @@ namespace CheapListBackEnd.Reposiroty
 
             }
             catch (Exception ex)
+
             {
                 throw (ex);
             }

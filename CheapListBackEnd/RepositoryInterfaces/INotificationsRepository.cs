@@ -13,6 +13,7 @@ namespace CheapListBackEnd.RepositoryInterfaces
         List<Notifications> GetNotifactionsByGroupID(int userID, int groupID);
         int UpdateNotifactions(List<Notifications> notifications);
         int PostNot2MultipleParticipants(Notifications notification);
-        
+
+               
     }
 }
