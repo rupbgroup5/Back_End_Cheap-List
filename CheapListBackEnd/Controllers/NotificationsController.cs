@@ -29,6 +29,22 @@ namespace CheapListBackEnd.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("api/Notifications/getByGroupId/{userID}/{groupID}")]
+        public IHttpActionResult getByGroupId(int userID, int groupID)
+        {
+            try
+            {
+                IEnumerable<Notifications> allNotifications = repo.GetNotifactionsByGroupID(userID, groupID).ToList();
+                return Ok(allNotifications);
+            }
+            catch (Exception ex)
+            {
+                return Content(HttpStatusCode.BadRequest, ex);
+            }
+        }
+
+
         public IHttpActionResult Post([FromBody] Notifications notifications)
         {
             try
