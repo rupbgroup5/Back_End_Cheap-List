@@ -133,33 +133,7 @@ namespace CheapListBackEnd.Reposiroty
             }
         }
 
-        public int DeleteNotifactions(Notifications notifications)
-        {
-            SqlConnection con = null;
-            SqlCommand cmd;
-            try
-            {
-                con = connect(false);
-                string str = $"procedure dbo.Notifications_DeleteNotifications @hasRead = {notifications.HasRead}, @hasDone = {notifications.HasDone}";
-
-                cmd = new SqlCommand(str, con);
-                return cmd.ExecuteNonQuery();
-
-            }
-            catch (Exception ex)
-            {
-                return 0;
-                throw (ex);
-
-            }
-            finally
-            {
-                if (con != null)
-                {
-                    con.Close();
-                }
-            }
-        }
+      
 
         public int PostNot2MultipleParticipants(Notifications notification)
         {

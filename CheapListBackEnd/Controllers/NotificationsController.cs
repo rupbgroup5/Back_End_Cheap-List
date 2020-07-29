@@ -89,17 +89,6 @@ namespace CheapListBackEnd.Controllers
         }
 
 
-        public IHttpActionResult Delete([FromBody] Notifications notifications)
-        {
-            try
-            {
-                repo.DeleteNotifactions(notifications);
-                return Ok(notifications);
-            }
-            catch (Exception ex)
-            {
-                return Content(HttpStatusCode.BadRequest, ex); ;
-            }
-        }
+   
     }
 }
