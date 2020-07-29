@@ -169,7 +169,7 @@ namespace CheapListBackEnd.Reposiroty
                         $"@typeNot = '{notification.Title}'," +
                         $"@dataObject = '{notification.DataObject}'," +
                         $"@groupID = {notification.GroupID}," +
-                        $"@listID = {notification.ListID} /r/n";
+                        $"@listID = {notification.ListID} \r\n";
                 }
 
 
