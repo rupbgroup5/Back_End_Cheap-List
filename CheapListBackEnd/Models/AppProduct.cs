@@ -11,7 +11,6 @@ namespace CheapListBackEnd.Models
         public string product_name { get; set; }
         public string product_description { get; set; }
         public string product_image { get; set; }
-        public string manufacturer_name { get; set; }
         public double estimatedProductPrice { get; set; }
 
         //for ProductInList

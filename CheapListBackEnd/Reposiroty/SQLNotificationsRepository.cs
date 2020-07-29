@@ -104,14 +104,28 @@ namespace CheapListBackEnd.Reposiroty
             try
             {
                 con = connect(false);
+                string replaceTheName = "";
+                if (notifications.DataObject != null && notifications.DataObject.Contains('"'))
+                {
+                    replaceTheName = notifications.DataObject.Replace("'", "`");
+                }
+                else replaceTheName = notifications.DataObject;
+
+
+
                 string str = $"exec dbo.Notifications_PostNotifications @userFrom = {notifications.UserFrom}, @userTo = {notifications.UserTo},";
-                str += $"@title = '{notifications.Title}', @typeNot = '{notifications.TypeNot}', @dataObject = '{notifications.DataObject}',";
-                str += $"@groupID = {notifications.GroupID}, @listID = {notifications.ListID}, @body = $'{notifications.Body}'";
+                str += $"@title = \'{notifications.Title}\', @typeNot = \'{notifications.TypeNot}\', @dataObject = \'{replaceTheName}\',";
+                str += $"@groupID = {notifications.GroupID}, @listID = {notifications.ListID}, @body = \'{notifications.Body}\' ";
 
                 //string str = "insert into Notifications " +
                 //              "(userFrom, userTo, title, typeNot, dataObject, groupID, listID ) " +
                 //              $"values({notifications.UserFrom}, {notifications.UserTo}, '{notifications.Title}', " +
                 //              $"'{notifications.TypeNot}', '{notifications.DataObject}', {notifications.GroupID}, {notifications.ListID})";
+
+
+
+
+
 
                 cmd = new SqlCommand(str, con);
                 return cmd.ExecuteNonQuery();
@@ -119,7 +133,6 @@ namespace CheapListBackEnd.Reposiroty
             }
             catch (Exception ex)
             {
-                return 0;
                 throw (ex);
 
 
@@ -133,7 +146,7 @@ namespace CheapListBackEnd.Reposiroty
             }
         }
 
-      
+
 
         public int PostNot2MultipleParticipants(Notifications notification)
         {
@@ -152,13 +165,13 @@ namespace CheapListBackEnd.Reposiroty
                         $"@userFrom = {notification.UserFrom}," +
                         $"@userTo = {userId}," +
                         $"@title = '{notification.Title}'," +
-                        $"@body = '${notification.Body}'"+
+                        $"@body = '${notification.Body}'" +
                         $"@typeNot = '{notification.Title}'," +
                         $"@dataObject = '{notification.DataObject}'," +
                         $"@groupID = {notification.GroupID}," +
                         $"@listID = {notification.ListID} /r/n";
                 }
-                   
+
 
 
                 cmd = new SqlCommand(str, con);
@@ -171,8 +184,12 @@ namespace CheapListBackEnd.Reposiroty
             }
             finally
             {
-                con.Close();
+                if (con != null)
+                {
+                    con.Close();
+                }
             }
+
         }
 
         public int UpdateNotifactions(List<Notifications> notifications)
@@ -194,7 +211,6 @@ namespace CheapListBackEnd.Reposiroty
             }
             catch (Exception ex)
             {
-                return 0;
                 throw (ex);
 
             }
