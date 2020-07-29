@@ -60,15 +60,19 @@ namespace CheapListBackEnd.Reposiroty
             try
             {
                 con = connect(false);
-                string str = "SET QUOTED_IDENTIFIER OFF" +
-                              " insert into AppProduct (product_barcode, product_name, product_description, product_image, manufacturer_name,estimatedProductPrice) " +
-                             $"values(\'{appProduct.product_barcode}\',\'{appProduct.product_name}\',\'{appProduct.product_description}\',\'{appProduct.product_image}\',\'{appProduct.manufacturer_name}\',{appProduct.estimatedProductPrice});" +
-                             $"insert into ProductInList(product_barcode,listID,groupID,quantity) values (\'{appProduct.product_barcode}\',{appProduct.ListID},{appProduct.GroupId},{appProduct.Quantity});" +
-                             "UPDATE AppList SET listEstimatedPrice = (" +
+                string str = $"BEGIN " +
+                              $"if NOT exists( select product_barcode from AppProduct where product_barcode = '{appProduct.product_barcode}')" +
+                              $"BEGIN " +
+                              "SET QUOTED_IDENTIFIER OFF " +
+                              "insert into AppProduct (product_barcode, product_name, product_description, product_image, manufacturer_name,estimatedProductPrice) " +
+                             $"values(\'{appProduct.product_barcode}\',\'{appProduct.product_name}\',\'{appProduct.product_description}\',\'{appProduct.product_image}\',\'{appProduct.manufacturer_name}\',{appProduct.estimatedProductPrice}); " +
+                             "END END " +
+                             $"insert into ProductInList(product_barcode,listID,groupID,quantity) values (\'{appProduct.product_barcode}\',{appProduct.ListID},{appProduct.GroupId},{appProduct.Quantity}); " +
+                             " UPDATE AppList SET listEstimatedPrice = ( " +
                              "select sum(A.estimatedProductPrice * P.quantity ) from AppProduct A inner join " +
-                             $"ProductInList P on A.product_barcode = P.product_barcode where listID = {appProduct.ListID})" +
-                             $"WHERE listID = {appProduct.ListID};" +
-                             $"delete Notifications where notID = ${appProduct.NotID}" +
+                             $"ProductInList P on A.product_barcode = P.product_barcode where listID = {appProduct.ListID}) " +
+                             $"WHERE listID = {appProduct.ListID}; " +
+                             $"delete Notifications where notID = ${appProduct.NotID} " +
                              "SET QUOTED_IDENTIFIER ON";
                 cmd = new SqlCommand(str, con);
                 return cmd.ExecuteNonQuery();
@@ -130,7 +134,8 @@ namespace CheapListBackEnd.Reposiroty
                 {
                     str = "update ProductInList " +
                           $"Set quantity = quantity + {appProduct.Quantity} " +
-                          $"where product_barcode = '{appProduct.product_barcode}' "; 
+                          $"where product_barcode = '{appProduct.product_barcode}' " +
+                          $"delete Notifications where notID = ${appProduct.NotID}";
                 }
                 else
                 {
