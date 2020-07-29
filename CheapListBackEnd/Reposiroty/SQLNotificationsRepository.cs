@@ -74,6 +74,7 @@ namespace CheapListBackEnd.Reposiroty
                     n.UserFrom = (int)sdr["userFrom"];
                     n.UserTo = (int)sdr["userTo"];
                     n.Title = Convert.ToString(sdr["title"]);
+                    n.Body = Convert.ToString(sdr["body"]);
                     n.TypeNot = Convert.ToString(sdr["typeNot"]);
                     n.DataObject = Convert.ToString(sdr["dataObject"]);
                     n.HasRead = Convert.ToBoolean(sdr["hasRead"]);
@@ -104,8 +105,8 @@ namespace CheapListBackEnd.Reposiroty
             {
                 con = connect(false);
                 string str = $"exec dbo.Notifications_PostNotifications @userFrom = {notifications.UserFrom}, @userTo = {notifications.UserTo},";
-                       str += $"@title = '{notifications.Title}', @typeNot = '{notifications.Title}', @dataObject = '{notifications.DataObject}',";
-                       str += $"@groupID = {notifications.GroupID}, @listID = {notifications.ListID}";
+                str += $"@title = '{notifications.Title}', @typeNot = '{notifications.TypeNot}', @dataObject = '{notifications.DataObject}',";
+                str += $"@groupID = {notifications.GroupID}, @listID = {notifications.ListID}, @body = $'{notifications.Body}'";
 
                 //string str = "insert into Notifications " +
                 //              "(userFrom, userTo, title, typeNot, dataObject, groupID, listID ) " +
@@ -159,6 +160,84 @@ namespace CheapListBackEnd.Reposiroty
                 }
             }
         }
+
+        public int PostNot2MultipleParticipants(Notifications notification)
+        {
+            SqlConnection con = null;
+            SqlCommand cmd;
+
+
+            try
+            {
+                con = connect(false);
+
+                string str = "";
+                foreach (var userId in notification.UsersTo)
+                {
+                    str += $"exec dbo.Notifications_PostNotifications" +
+                        $"@userFrom = {notification.UserFrom}," +
+                        $"@userTo = {userId}," +
+                        $"@title = '{notification.Title}'," +
+                        $"@body = '${notification.Body}'"+
+                        $"@typeNot = '{notification.Title}'," +
+                        $"@dataObject = '{notification.DataObject}'," +
+                        $"@groupID = {notification.GroupID}," +
+                        $"@listID = {notification.ListID} /r/n";
+                }
+                   
+
+
+                cmd = new SqlCommand(str, con);
+                return cmd.ExecuteNonQuery();
+
+            }
+            catch (Exception ex)
+            {
+                throw (ex);
+            }
+            finally
+            {
+                con.Close();
+            }
+        }
+
+        public int UpdateNotifactions(List<Notifications> notifications)
+        {
+            SqlConnection con = null;
+            SqlCommand cmd;
+            try
+            {
+                con = connect(false);
+                string str = "";
+                foreach (var item in notifications)
+                {
+                    str += $"exec dbo.Notifications_UpdateNotifications @notID = {item.NotID}";
+                }
+                str += "delete Notifications where hasRead = 1 and typeNot != 'AskProduct'";
+                cmd = new SqlCommand(str, con);
+                return cmd.ExecuteNonQuery();
+
+            }
+            catch (Exception ex)
+            {
+                return 0;
+                throw (ex);
+
+            }
+            finally
+            {
+                if (con != null)
+                {
+                    con.Close();
+                }
+            }
+        }
+
+
+
+
+
+
 
     }
 }

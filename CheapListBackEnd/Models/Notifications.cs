@@ -10,6 +10,7 @@ namespace CheapListBackEnd.Models
         public int NotID { get; set; }
         public int UserFrom { get; set; }
         public int UserTo { get; set; }
+        public List<int> UsersTo { get; set; }
         public string Title { get; set; }
         public string Body { get; set; }
         public string DataObject { get; set; }

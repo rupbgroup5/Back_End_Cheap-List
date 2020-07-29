@@ -58,13 +58,37 @@ namespace CheapListBackEnd.Controllers
             }
         }
 
-       
-        public void Put(int id, [FromBody]string value)
+        [HttpPost]
+        [Route("api/Notifications/PostNot2MultipleParticipants")]
+        public IHttpActionResult PostNot2MultipleParticipants([FromBody] Notifications notification)
         {
-
+            try
+            {
+                repo.PostNot2MultipleParticipants(notification);
+                return Ok("the notification received to the app DB under all the provided ids");
+            }
+            catch (Exception ex)
+            {
+                return Content(HttpStatusCode.BadRequest, ex); ;
+            }
         }
 
-       
+
+
+        public IHttpActionResult Put([FromBody] List<Notifications> notifications)
+        {
+            try
+            {
+                repo.UpdateNotifactions(notifications);
+                return Ok(notifications);
+            }
+            catch (Exception ex)
+            {
+                return Content(HttpStatusCode.BadRequest, ex); ;
+            }
+        }
+
+
         public IHttpActionResult Delete([FromBody] Notifications notifications)
         {
             try
