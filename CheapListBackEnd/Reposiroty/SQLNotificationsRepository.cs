@@ -10,16 +10,16 @@ namespace CheapListBackEnd.Reposiroty
 {
     public class SQLNotificationsRepository : SQLGeneralRepository, INotificationsRepository
     {
-        public List<Notifications> GetNotifactionsByID(int userID, int listID)
+        public List<Notifications> GetNotifactionsByID(int userID)
         {
             List<Notifications> allNotifications = new List<Notifications>();
             SqlConnection con = null;
 
             try
-            {
+           {
                 con = connect(false);
 
-                string query = $"exec dbo.Notifications_GetNotificationsByID @userTo = {userID}, @listID  = {listID}";
+                string query = $"exec dbo.Notifications_GetNotificationsByID @userTo = {userID}";
 
                 SqlCommand cmd = new SqlCommand(query, con);
 
@@ -36,8 +36,15 @@ namespace CheapListBackEnd.Reposiroty
                     n.DataObject = Convert.ToString(sdr["dataObject"]);
                     n.HasRead = Convert.ToBoolean(sdr["hasRead"]);
                     n.HasDone = Convert.ToBoolean(sdr["hasDone"]);
-                    n.GroupID = (int)sdr["groupID"];
-                    n.ListID = (int)sdr["listID"];
+                    if (Convert.IsDBNull(sdr["groupID"]))
+                    {
+                        n.GroupID = 0;
+                    }else n.GroupID = (int)sdr["groupID"];
+                    if (Convert.IsDBNull(sdr["listID"]))
+                    {
+                        n.ListID = 0;
+                    }
+                    else n.ListID = (int)sdr["listID"];
                     n.Body = Convert.ToString(sdr["body"]);
                     allNotifications.Add(n);
                 }
@@ -114,10 +121,27 @@ namespace CheapListBackEnd.Reposiroty
 
 
 
-                string str = $"exec dbo.Notifications_PostNotifications @userFrom = {notifications.UserFrom}, @userTo = {notifications.UserTo},";
-                str += $"@title = \'{notifications.Title}\', @typeNot = \'{notifications.TypeNot}\', @dataObject = \'{replaceTheName}\',";
-                str += $"@groupID = {notifications.GroupID}, @listID = {notifications.ListID}, @body = \'{notifications.Body}\' ";
-                ;
+
+               
+
+                string str = $"exec dbo.Notifications_PostNotifications @userFrom = {notifications.UserFrom}, "; 
+                str += $"@userTo = {notifications.UserTo}, ";
+                str += $"@title = \'{notifications.Title}\', ";
+                str += $"@typeNot = \'{notifications.TypeNot}\', ";
+                str += $" @dataObject = \'{replaceTheName}\', ";
+
+                if (notifications.GroupID == 0)
+                {
+                    str += $"@groupID = null, ";
+                }else str += $"@groupID = {notifications.GroupID}, ";
+
+                if (notifications.ListID == 0)
+                {
+                    str += $"@listID = null, ";
+                }else str += $"@listID = {notifications.ListID}, ";
+
+                str += $"@body = \'{notifications.Body}\' ";
+                
 
 
 

@@ -8,7 +8,7 @@ namespace CheapListBackEnd.RepositoryInterfaces
 {
     public interface INotificationsRepository
     {
-        List<Notifications> GetNotifactionsByID(int userID, int listID);
+        List<Notifications> GetNotifactionsByID(int userID);
         int PostNotifactions(Notifications notifactions);
         List<Notifications> GetNotifactionsByGroupID(int userID, int groupID);
         int UpdateNotifactions(List<Notifications> notifications);

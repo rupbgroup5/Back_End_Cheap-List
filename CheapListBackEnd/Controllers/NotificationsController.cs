@@ -15,13 +15,13 @@ namespace CheapListBackEnd.Controllers
         public NotificationsController(INotificationsRepository ir) => repo = ir;
 
         [HttpGet]
-        [Route("api/Notifications/{userID}/{listID}")]
-        public IHttpActionResult Get(int userID, int listID)
+        [Route("api/Notifications/{userID}")]
+        public IHttpActionResult Get(int userID)
         {
 
             try
             {
-                IEnumerable<Notifications> allNotifications = repo.GetNotifactionsByID(userID, listID).ToList();
+                IEnumerable<Notifications> allNotifications = repo.GetNotifactionsByID(userID).ToList();
                 return Ok(allNotifications);
             }
             catch (Exception ex)
