@@ -112,17 +112,16 @@ namespace CheapListBackEnd.Reposiroty
                 }
                 else replaceTheName = notifications.DataObject;
 
-
-
-                string str = $"exec dbo.Notifications_PostNotifications @userFrom = {notifications.UserFrom}, @userTo = {notifications.UserTo},";
-                str += $"@title = \'{notifications.Title}\', @typeNot = \'{notifications.TypeNot}\', @dataObject = \'{replaceTheName}\',";
-                str += $"@groupID = {notifications.GroupID}, @listID = {notifications.ListID}, @body = \'{notifications.Body}\' ";
-                ;
-
-
-
-
-
+                string str = $"exec dbo.Notifications_PostNotifications ";
+                str += $"@userFrom = {notifications.UserFrom}, ";
+                str += $"@userTo = {notifications.UserTo}, ";
+                str += $"@title = '{notifications.Title}', ";
+                str += $"@body = '{notifications.Body}', ";
+                str += $"@typeNot = '{notifications.TypeNot}', ";
+                str += $"@dataObject = '{replaceTheName}', ";
+                str += $"@groupID = {notifications.GroupID}, ";
+                str += $"@listID = ";
+                str += notifications.ListID == 0 ? "null" : notifications.ListID.ToString();
 
                 cmd = new SqlCommand(str, con);
                 return cmd.ExecuteNonQuery();
@@ -167,12 +166,13 @@ namespace CheapListBackEnd.Reposiroty
                     if (notification.GroupID == 0)
                     {
                         str += $"@groupID = null, ";
-                    }else str += $"@groupID = {notification.GroupID}, ";
+                    }
+                    else str += $"@groupID = {notification.GroupID}, ";
                     if (notification.ListID == 0)
                     {
                         str += $"@listID = null; ";
                     }
-                   else str += $"@listID = {notification.ListID}; \r\n ";
+                    else str += $"@listID = {notification.ListID}; \r\n ";
                 }
 
 
