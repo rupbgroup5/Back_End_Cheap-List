@@ -93,6 +93,7 @@ namespace CheapListBackEnd.Reposiroty
                         au.UserName = (string)sdr["userName"];
                         au.IsAdmin = Convert.ToBoolean(sdr["isAdmin"]);
                         au.ExpoToken = Convert.ToString(sdr["ExpoToken"]);
+                        au.PhoneNumber = Convert.ToString(sdr["PhoneNumber"]);
                         group.Participiants.Add(au);
                     }
                 }
