@@ -252,20 +252,47 @@ namespace CheapListBackEnd.Repository
 
         }
 
-        public int UpdateFeild(UpdateAppUser user2update)
+        public int UpdateFeilds(AppUser newUser)
         {
+
             try
             {
                 con = connect(false); // true?
-
-                string query = "SET QUOTED_IDENTIFIER OFF\r\n"; // if there is an ' so it wont ruined the UPDATE
-                query += $"UPDATE AppUser SET {user2update.Column2update}=\"{user2update.NewValue}\"";
-                query += $"WHERE UserID={user2update.Id};";
+                AppUser oldUser = new AppUser();
+                string query = $"select * from AppUser where userID = '{newUser.UserID}'";
 
                 cmd = new SqlCommand(query, con);
 
-                int res = cmd.ExecuteNonQuery();
-                return res;
+                sdr = cmd.ExecuteReader();
+
+                while (sdr.Read())
+                {
+                    oldUser.UserName = (string)sdr["UserName"];
+                    oldUser.UserPassword = Convert.ToString(sdr["UserPassword"]);
+                    oldUser.UserMail = Convert.ToString(sdr["UserMail"]);
+
+                }
+                if (newUser.UserName == null)
+                {
+                    newUser.UserName = oldUser.UserName;
+                }
+                if (newUser.UserPassword == null)
+                {
+                    newUser.UserPassword = oldUser.UserPassword;
+                }
+                if (newUser.UserMail == null)
+                {
+                    newUser.UserMail = oldUser.UserMail;
+                }
+
+                con.Close();
+
+                con = connect(false);
+                string str = $"exec dbo.spAppUser_UpdateUser @userName = '{newUser.UserName}', @userMail = '{newUser.UserMail}', @userPassword = '{newUser.UserPassword}', @userID = {newUser.UserID}";
+
+
+                cmd = new SqlCommand(str, con);
+                return cmd.ExecuteNonQuery();
 
             }
             catch (Exception exp)
@@ -682,7 +709,7 @@ namespace CheapListBackEnd.Repository
         private void SendMail(string toAddress, string mailTitle, string mailBody)
         {
             string password = WebConfigurationManager.AppSettings["SecurePassword"];
-            var smtp = new SmtpClient
+            var smtp = new SmtpClient // Smtp = Simple Mail Transfer Protocol 
             {
                 Host = "Smtp.gmail.com",
                 Port = 587,
@@ -709,11 +736,6 @@ namespace CheapListBackEnd.Repository
 
 
         }
-
-
-
-
-
 
     }
 
