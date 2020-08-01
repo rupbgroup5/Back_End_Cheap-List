@@ -193,12 +193,12 @@ namespace CheapListBackEnd.Controllers
         }
 
         [HttpPost]
-        [Route("api/AppUsers/SystemPostUser")]
-        public IHttpActionResult SystemPostUser([FromBody] AppUser userBySystem)
+        [Route("api/AppUsers/SystemPostUser/{requestSenderName}")]
+        public IHttpActionResult SystemPostUser([FromBody] AppUser userBySystem, string requestSenderName)
         {
             try
             {
-                repo.PostSystemAppUser(userBySystem);
+                repo.PostSystemAppUser(userBySystem, requestSenderName);
                 return Ok(userBySystem);
             }
             catch (Exception ex)
