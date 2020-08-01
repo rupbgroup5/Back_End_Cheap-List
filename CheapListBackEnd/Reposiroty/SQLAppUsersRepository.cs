@@ -126,6 +126,7 @@ namespace CheapListBackEnd.Repository
                     au.UserPassword = Convert.ToString(sdr["UserPassword"]);
                     au.UserMail = Convert.ToString(sdr["UserMail"]);
                     au.UserAdress = Convert.ToString(sdr["UserAdress"]);
+                    au.PhoneNumber = Convert.ToString(sdr["PhoneNumber"]);
                     //if the user exist and the password metch so I return appuser, else au = null
                 }
                 else { au = null; }
