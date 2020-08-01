@@ -212,13 +212,13 @@ namespace CheapListBackEnd.Controllers
         // col 2 update could be either: UserMail, UserPassword, UserName, User Adress
         //---> need to make a DDL in the client side
         //NOT HANDLED YET
-        public IHttpActionResult Put([FromBody]UpdateAppUser user2update)
+        public IHttpActionResult Put([FromBody]AppUser newUser)
         {
             try
             {
-                int res = repo.UpdateFeild(user2update);
-                return res > 0 ? Ok($"we have update {user2update.Column2update} to {user2update.NewValue} in the app database") :
-                throw new EntryPointNotFoundException($"there is no user with the provided id ({user2update.Id})");
+                int res = repo.UpdateFeilds(newUser);
+                return res > 0 ? Ok($"we have update the user with the id {newUser.UserID}  in the app database") :
+                throw new EntryPointNotFoundException($"there is no user with the provided id ({newUser.UserID})");
             }
             catch (EntryPointNotFoundException ex)
             {
