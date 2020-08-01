@@ -176,7 +176,7 @@ namespace CheapListBackEnd.Controllers
                 return Content(HttpStatusCode.BadRequest, ex);
             }
         }
-        
+
         [HttpPost]
         [Route("api/AppUsers/PostUser")]
         public IHttpActionResult Post([FromBody]AppUser newUser)
@@ -209,9 +209,6 @@ namespace CheapListBackEnd.Controllers
 
 
         // PUT api/<controller>/5
-        // col 2 update could be either: UserMail, UserPassword, UserName, User Adress
-        //---> need to make a DDL in the client side
-        //NOT HANDLED YET
         public IHttpActionResult Put([FromBody]AppUser newUser)
         {
             try
@@ -290,4 +287,3 @@ namespace CheapListBackEnd.Controllers
         }
     }
 }
-

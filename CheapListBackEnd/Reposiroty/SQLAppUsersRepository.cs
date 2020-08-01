@@ -105,84 +105,6 @@ namespace CheapListBackEnd.Repository
             }
         }
 
-        public string UserForgotPassword(string userMail)
-        {
-
-            try
-            {
-                AppUser au = new AppUser();
-                con = connect(false);
-
-                string query = $"exec spAppUser_GetUserPassword @userEmail='{userMail}'";
-
-                cmd = new SqlCommand(query, con);
-
-                sdr = cmd.ExecuteReader();
-                if (sdr.Read())
-                {
-                    au.UserID = (int)sdr["userID"];
-                    au.UserMail = (string)sdr["userMail"];
-                    au.UserPassword = Convert.ToString(sdr["UserPassword"]);
-                }
-                else
-                {
-                    return $" {userMail} המייל המצויין אינו מזוהה במערכת שלנו";
-                    // so there is no mail associated with the id providded and I want to handle it on the front end
-                }
-                try
-                {
-                    SendMail(au.UserMail, au.UserPassword);
-                    return $" {au.UserMail} סיסמתך נשלחה למייל";
-                }
-                catch (Exception exp)
-                {
-                    throw exp;
-                }
-
-            }
-            catch (Exception exp)
-            {
-                throw (exp);
-            }
-            finally
-            {
-                con.Close();
-            }
-        }
-
-        private static void SendMail(string toAddress, string userPassword)
-        {
-            string password = WebConfigurationManager.AppSettings["SecurePassword"];
-            var smtp = new SmtpClient
-            {
-                Host = "Smtp.gmail.com",
-                Port = 587,
-                EnableSsl = true,
-                DeliveryMethod = SmtpDeliveryMethod.Network,
-                UseDefaultCredentials = false,
-                Credentials = new NetworkCredential("rupbgroup5@gmail.com", password)
-            };
-
-            using (var mailMessage = new MailMessage("rupbgroup5@gmail.com", toAddress)
-            {
-                Subject = "צוות אויש שחכתי cheap list",
-                Body = "" +
-                "אהלן, הבנו ששחכת את הסיסמה ?\r\n" +
-                "שום בעיה ! \r\n" +
-                "הנה הסיסמה שלך כמו שהיא שמורה אצלנו \r\n" +
-                $"{userPassword} \r\n" +
-                $"צוות אויש שחכתי מאחל לכם המשך קנייה חכמה =] ",
-            })
-                try
-                {
-                    smtp.Send(mailMessage);
-                }
-                catch (Exception exp)
-                {
-                    throw new Exception($"something went wrong in SendMail method: \n {exp.Message}");
-                }
-        }
-
         public AppUser AuthenticateUserLogin(string userName, string password)
         {
             AppUser au = new AppUser();
@@ -330,39 +252,9 @@ namespace CheapListBackEnd.Repository
 
         }
 
-        public int PostSystemAppUser(AppUser userBySystem)
-        {
-            SqlConnection con = null;
-            SqlCommand cmd;
-
-            try
-            {
-                con = connect(false);
-                string str = $"exec dbo.spAppUser_InsertUserBySystem @UserName='{userBySystem.UserName}', @WayOf_Registration='system', @PhoneNumber = '{userBySystem.PhoneNumber}'";
-
-
-                cmd = new SqlCommand(str, con);
-                userBySystem.UserID = Convert.ToInt32(cmd.ExecuteScalar());
-                return userBySystem.UserID;
-
-            }
-            catch (Exception ex)
-            {
-                return 0;
-                throw (ex);
-
-            }
-            finally
-            {
-                if (con != null)
-                {
-                    con.Close();
-                }
-            }
-        }
-
         public int UpdateFeilds(AppUser newUser)
         {
+
             try
             {
                 con = connect(false); // true?
@@ -701,7 +593,155 @@ namespace CheapListBackEnd.Repository
                 con.Close();
             }
         }
+
+        public string UserForgotPassword(string userMail)
+        {
+
+            try
+            {
+                AppUser au = new AppUser();
+                con = connect(false);
+
+                string query = $"exec spAppUser_GetUserPassword @userEmail='{userMail}'";
+
+                cmd = new SqlCommand(query, con);
+
+                sdr = cmd.ExecuteReader();
+                if (sdr.Read())
+                {
+                    au.UserID = (int)sdr["userID"];
+                    au.UserMail = (string)sdr["userMail"];
+                    au.UserPassword = Convert.ToString(sdr["UserPassword"]);
+                }
+                else
+                {
+                    return $" {userMail} המייל המצויין אינו מזוהה במערכת שלנו";
+                    // so there is no mail associated with the id providded and I want to handle it on the front end
+                }
+                try
+                {
+                    string mailTitle = "צוות אויש שחכתי cheap list";
+                    string mailBody = "אהלן, הבנו ששכחת  את הסיסמה שלך.\r\n";
+                    mailBody += "אין שום בעיה, הנה הסיסמה שלך כמו שהיא שמורה אצלנו\r\n";
+                    mailBody += $" {au.UserPassword} \r\n";
+                    mailBody += "צוות אויש שחכתי מאחל לכם המשך קנייה חכמה =]";
+
+                    SendMail(au.UserMail, mailTitle, mailBody);
+
+                    return $" {au.UserMail} סיסמתך נשלחה למייל";
+                }
+                catch (Exception exp)
+                {
+                    throw exp;
+                }
+
+            }
+            catch (Exception exp)
+            {
+                throw (exp);
+            }
+            finally
+            {
+                con.Close();
+            }
+        }
+
+        public int PostSystemAppUser(AppUser userBySystem, string requestSenderName)
+        {
+            SqlConnection con = null;
+            SqlCommand cmd;
+            string tempPassword = Guid.NewGuid().ToString().Substring(0, 7);
+
+            try
+            {
+                con = connect(false);
+                string str = $"exec dbo.spAppUser_InsertUserBySystem " +
+                    $"@UserName='{userBySystem.UserName}', " +
+                    $"@WayOf_Registration='system', " +
+                    $"@PhoneNumber = '{userBySystem.PhoneNumber}', " +
+                    $"@TempPassword = '{tempPassword}'";
+
+
+                cmd = new SqlCommand(str, con);
+                userBySystem.UserID = Convert.ToInt32(cmd.ExecuteScalar());
+
+                string mailTitle = "cheap list - אפליקציית הקניות שלך";
+                string mailBody = "שלום חברים,";
+                mailBody += "\r\n";
+                mailBody += $"{requestSenderName} ";
+                mailBody += "מזמין אתכם להצטרך לאפליקציה שלנו";
+                mailBody += "\r\n";
+                mailBody += "אנו שמחים מאוד לקבל אתכם לשורותינו";
+                mailBody += "\r\n";
+                mailBody += "ולכן הרשנו לעצמנו ליצור לכם משתמש";
+                mailBody += "\r\n";
+                mailBody += "שם המשתמש והסיסמא הזמניים שלכם מצורפים למייל זה";
+                mailBody += "\r\n";
+                mailBody += "ברגע שתכנסו פעם ראשונה לאפליקציה שלנו נבקש ממכם לשנות אותם";
+                mailBody += "\r\n";
+                mailBody += "צוות האפליקציה מאחל לכם קנייה חכמה";
+                mailBody += "\r\n";
+                mailBody += "שם המשתמש שלכם הוא: ";
+                mailBody += userBySystem.UserName;
+                mailBody += "\r\n";
+                mailBody += "סיסמה:  ";
+                mailBody += tempPassword;
+                mailBody += "\r\n";
+                mailBody += "=]";
+
+                SendMail(userBySystem.UserMail, mailTitle, mailBody);
+
+                return userBySystem.UserID;
+            }
+            catch (Exception ex)
+            {
+                throw (ex);
+            }
+            finally
+            {
+                if (con != null)
+                {
+                    con.Close();
+                }
+            }
+        }
+
+        private void SendMail(string toAddress, string mailTitle, string mailBody)
+        {
+            string password = WebConfigurationManager.AppSettings["SecurePassword"];
+            var smtp = new SmtpClient // Smtp = Simple Mail Transfer Protocol 
+            {
+                Host = "Smtp.gmail.com",
+                Port = 587,
+                EnableSsl = true,
+                DeliveryMethod = SmtpDeliveryMethod.Network,
+                UseDefaultCredentials = false,
+                Credentials = new NetworkCredential("rupbgroup5@gmail.com", password)
+            };
+
+            using (var mailMessage = new MailMessage("rupbgroup5@gmail.com", toAddress)
+            {
+                Subject = mailTitle,
+                Body = mailBody,
+            })
+                try
+                {
+                    smtp.Send(mailMessage);
+                }
+                catch (Exception exp)
+                {
+                    throw new Exception($"something went wrong in sendMail method: \n {exp.Message}");
+                }
+
+
+
+        }
+
+
+
+
+
+
     }
 
 }
-
