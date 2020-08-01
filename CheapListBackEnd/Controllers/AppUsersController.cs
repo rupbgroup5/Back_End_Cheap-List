@@ -208,6 +208,24 @@ namespace CheapListBackEnd.Controllers
         }
 
 
+        [HttpPost]
+        [Route("api/AppUsers/UploadImgUser")]
+        public IHttpActionResult UploadImgUser([FromBody] AppUser user)
+        {
+            try
+            {
+                string res = repo.UploadImgUser(user);
+                return Ok(res);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+
+
         // PUT api/<controller>/5
         public IHttpActionResult Put([FromBody]AppUser newUser)
         {

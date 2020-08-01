@@ -2,12 +2,14 @@
 using CheapListBackEnd.Reposiroty;
 using CheapListBackEnd.RepositoryInterfaces;
 using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Drawing;
 using System.Linq;
 using System.Net;
 using System.Net.Mail;
+using System.Web;
 using System.Web.Configuration;
 
 namespace CheapListBackEnd.Repository
@@ -181,11 +183,13 @@ namespace CheapListBackEnd.Repository
                 throw ex;
             }
 
+
+
+
             try
             {
 
                 string query = "SET QUOTED_IDENTIFIER OFF\r\n"; // if there is an ' so it wont ruined the insertition
-
                 query += "insert  into AppUser (UserName, UserMail, UserPassword, wayOf_Registration, socialID, ExpoToken, PhoneNumber)\r\n";
                 query += $"VALUES (\"{newUser.UserName}\", \"{newUser.UserMail}\", \"{newUser.UserPassword}\", \"{newUser.WayOf_Registration}\", \"{newUser.SocialID}\",";
                 query += $"\"{newUser.ExpoToken}\",\"{newUser.PhoneNumber}\"); ";
@@ -706,6 +710,57 @@ namespace CheapListBackEnd.Repository
                 }
             }
         }
+
+        public string UploadImgUser(AppUser user)
+        {
+
+            try
+            {
+                user.UserImgUrl = Convert_Base64ToUrl(user.UserImgUrl, "uploadedImgsDONOTDELETE");
+
+                con = connect(false);
+
+                string query = $"exec spAppUser_UpdateUserImg @givenUserImgUrl='{user.UserImgUrl}', @givenUserID={user.UserID}";
+
+                cmd = new SqlCommand(query, con);
+
+                return (string)cmd.ExecuteScalar();
+
+            }
+            catch (Exception exp)
+            {
+                throw exp;
+
+            }
+        }
+
+        //pay attention this method will work on production only due to serverPath
+        private string Convert_Base64ToUrl(string base64, string fileName)
+        {
+            try
+            {
+                string serverPath = HttpContext.Current.Server.MapPath("~/uploadedImgsDONOTDELETE");
+                //data:image/jpeg;base64,/9j/4AAQSkZJ
+                int pFrom = base64.IndexOf("data:image/") + "data:image/".Length;
+                int pTo = base64.IndexOf(";");
+                string type = base64.Substring(pFrom, pTo - pFrom);
+
+                base64 = base64.Substring(base64.IndexOf(",") + 1);
+
+                //Image image = Image.FromStream(new MemoryStream(Convert.FromBase64String(base64)));
+                string imageServerPath = serverPath + "/" + fileName + "." + type;
+                File.WriteAllBytes(imageServerPath, Convert.FromBase64String(base64));
+
+                //image.Save(imageServerPath, ImageFormat.Jpeg);
+                string imageURL = "http://proj.ruppin.ac.il/bgroup5/FinalProject/backEnd" + fileName + "." + type;
+                return imageURL;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
 
         private void SendMail(string toAddress, string mailTitle, string mailBody)
         {

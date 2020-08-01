@@ -25,6 +25,8 @@ namespace CheapListBackEnd.RepositoryInterfaces
         int UpdateUserExpoToken(AppUser user);
         int UpdateUserCoords(AppUser user);
         bool IsExpoTokenUpdated(int userID);
+        string UploadImgUser(AppUser user);
+
 
 
     }
