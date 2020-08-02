@@ -665,7 +665,7 @@ namespace CheapListBackEnd.Repository
                     $"@WayOf_Registration='system', " +
                     $"@PhoneNumber = '{userBySystem.PhoneNumber}', " +
                     $"@TempPassword = '{tempPassword}', " +
-                   $"@userMail = {userBySystem.UserMail}";
+                   $"@userMail = '{userBySystem.UserMail}'";
 
 
                 cmd = new SqlCommand(str, con);
