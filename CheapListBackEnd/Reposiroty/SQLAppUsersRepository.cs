@@ -670,31 +670,36 @@ namespace CheapListBackEnd.Repository
                 cmd = new SqlCommand(str, con);
                 userBySystem.UserID = Convert.ToInt32(cmd.ExecuteScalar());
 
-                string mailTitle = "cheap list - אפליקציית הקניות שלך";
-                string mailBody = "שלום חברים,";
-                mailBody += "\r\n";
-                mailBody += $"{requestSenderName} ";
-                mailBody += "מזמין אתכם להצטרך לאפליקציה שלנו";
-                mailBody += "\r\n";
-                mailBody += "אנו שמחים מאוד לקבל אתכם לשורותינו";
-                mailBody += "\r\n";
-                mailBody += "ולכן הרשנו לעצמנו ליצור לכם משתמש";
-                mailBody += "\r\n";
-                mailBody += "שם המשתמש והסיסמא הזמניים שלכם מצורפים למייל זה";
-                mailBody += "\r\n";
-                mailBody += "ברגע שתכנסו פעם ראשונה לאפליקציה שלנו נבקש ממכם לשנות אותם";
-                mailBody += "\r\n";
-                mailBody += "צוות האפליקציה מאחל לכם קנייה חכמה";
-                mailBody += "\r\n";
-                mailBody += "שם המשתמש שלכם הוא: ";
-                mailBody += userBySystem.UserName;
-                mailBody += "\r\n";
-                mailBody += "סיסמה:  ";
-                mailBody += tempPassword;
-                mailBody += "\r\n";
-                mailBody += "=]";
 
-                SendMail(userBySystem.UserMail, mailTitle, mailBody);
+                if (userBySystem.UserMail != "")
+                {
+                    string mailTitle = "cheap list - אפליקציית הקניות שלך";
+                    string mailBody = "שלום חברים,";
+                    mailBody += "\r\n";
+                    mailBody += $"{requestSenderName} ";
+                    mailBody += "מזמין אתכם להצטרך לאפליקציה שלנו";
+                    mailBody += "\r\n";
+                    mailBody += "אנו שמחים מאוד לקבל אתכם לשורותינו";
+                    mailBody += "\r\n";
+                    mailBody += "ולכן הרשנו לעצמנו ליצור לכם משתמש";
+                    mailBody += "\r\n";
+                    mailBody += "שם המשתמש והסיסמא הזמניים שלכם מצורפים למייל זה";
+                    mailBody += "\r\n";
+                    mailBody += "ברגע שתכנסו פעם ראשונה לאפליקציה שלנו נבקש ממכם לשנות אותם";
+                    mailBody += "\r\n";
+                    mailBody += "צוות האפליקציה מאחל לכם קנייה חכמה";
+                    mailBody += "\r\n";
+                    mailBody += "שם המשתמש שלכם הוא: ";
+                    mailBody += userBySystem.UserName;
+                    mailBody += "\r\n";
+                    mailBody += "סיסמה:  ";
+                    mailBody += tempPassword;
+                    mailBody += "\r\n";
+                    mailBody += "=]";
+
+                    SendMail(userBySystem.UserMail, mailTitle, mailBody);
+                }
+               
 
                 return userBySystem.UserID;
             }
