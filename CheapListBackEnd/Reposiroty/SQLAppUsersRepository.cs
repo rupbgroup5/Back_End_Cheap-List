@@ -494,7 +494,9 @@ namespace CheapListBackEnd.Repository
 
                 if (sdr.Read())
                 {
-                    au = new AppUser() { DateOfLast_Register = (string)sdr["DateOfLast_Register"] };
+                    au = new AppUser() { DateOfLast_Register = sdr["DateOfLast_Register"].ToString() };
+
+                    if (au.DateOfLast_Register == "") { return false; }
                 }
                 else
                 {
@@ -700,7 +702,7 @@ namespace CheapListBackEnd.Repository
 
                     SendMail(userBySystem.UserMail, mailTitle, mailBody);
                 }
-               
+
 
                 return userBySystem.UserID;
             }
