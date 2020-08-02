@@ -664,14 +664,15 @@ namespace CheapListBackEnd.Repository
                     $"@UserName='{userBySystem.UserName}', " +
                     $"@WayOf_Registration='system', " +
                     $"@PhoneNumber = '{userBySystem.PhoneNumber}', " +
-                    $"@TempPassword = '{tempPassword}'";
+                    $"@TempPassword = '{tempPassword}', " +
+                   $"@userMail = {userBySystem.UserMail}";
 
 
                 cmd = new SqlCommand(str, con);
                 userBySystem.UserID = Convert.ToInt32(cmd.ExecuteScalar());
 
 
-                if (userBySystem.UserMail != "")
+                if (userBySystem.UserMail != null)
                 {
                     string mailTitle = "cheap list - אפליקציית הקניות שלך";
                     string mailBody = "שלום חברים,";
